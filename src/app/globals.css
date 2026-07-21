@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@theme {
+  /* Warm Pastel Theme Palette */
+  --color-primary-50: #fefdfb;
+  --color-primary-100: #faf7f0;
+  --color-primary-200: #f5eedc;
+  --color-primary-300: #eedec0;
+  --color-primary-400: #e2c494;
+  --color-primary-500: #d4a96b; /* Soft Honey Gold */
+  --color-primary-600: #b5894b;
+  --color-primary-700: #946931;
+
+  --color-secondary-50: #f5fbf8;
+  --color-secondary-100: #ebf7f0;
+  --color-secondary-200: #cfedd8;
+  --color-secondary-300: #afdfc1;
+  --color-secondary-400: #7dc49b;
+  --color-secondary-500: #5bb37e; /* Sage Mint Green */
+  --color-secondary-600: #439665;
+  --color-secondary-700: #337a50;
+
+  --color-accent-50: #fffbf9;
+  --color-accent-100: #fff3ed;
+  --color-accent-200: #ffe1d3;
+  --color-accent-300: #ffc9b1;
+  --color-accent-400: #ffa17c;
+  --color-accent-500: #ff8552; /* Pastel Peach Coral */
+  --color-accent-600: #df6433;
+  --color-accent-700: #b8481c;
+
+  --color-cream-50: #fdfdfc;
+  --color-cream-100: #FAF8F5; /* Main Brand Warm Cream */
+  --color-cream-200: #f2ede4;
+  --color-cream-300: #e5ded1;
+
+  --color-charcoal: #2d2a29; /* Gentle dark for text */
+  --color-baby-blue: #a3c9e8;
+  --color-baby-pink: #f2c6d2;
+  --color-baby-yellow: #f8e5b4;
+
+  /* Custom Typography Mapping */
+  --font-quicksand: var(--font-quicksand), sans-serif;
+  --font-nunito: var(--font-nunito), sans-serif;
+
+  /* Extra Friendly Shapes */
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.5rem;
+}
+
+:root {
+  --background: #FAF8F5; /* Warm Cream */
+  --foreground: #2D2A29; /* Charcoal */
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-quicksand);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-nunito);
+  font-weight: 700;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+}
+::-webkit-scrollbar-thumb {
+  background: #e5ded1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4a96b;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Subtle pulse border utility */
+@keyframes softPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(212, 169, 107, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(212, 169, 107, 0);
+  }
+}
+
+.organic-pulse {
+  animation: softPulse 2.5s infinite;
+}

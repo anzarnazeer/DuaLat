@@ -1,0 +1,208 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// PRODUCT CATALOG
+// ─────────────────────────────────────────────
+
+model Product {
+  id              String      @id @default(cuid())
+  name            String
+  description     String
+  basePrice       Float
+  salePrice       Float?
+  category        Category
+  collection      Collection
+  images          String[]    // Array of image URLs stored as text[]
+  fabricTags      String[]
+  fabricDetails   String
+  careInstructions String
+  rating          Float       @default(0)
+
+  // Relations
+  sizes           SizeStock[]
+  reviews         Review[]
+  orderItems      OrderItem[]
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@map("products")
+}
+
+model SizeStock {
+  id          String  @id @default(cuid())
+  size        String  // e.g. 'Newborn', '0-3M', '3-6M'
+  stockCount  Int
+  weightRange String  // e.g. "5-8 lbs"
+  heightRange String  // e.g. "17-21 in"
+
+  product     Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   String
+
+  @@map("size_stocks")
+}
+
+model Review {
+  id            String      @id @default(cuid())
+  reviewerName  String
+  rating        Int         // 1-5
+  comment       String
+  sizePurchased String
+  fitFeedback   FitFeedback
+
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId     String
+
+  createdAt     DateTime    @default(now())
+
+  @@map("reviews")
+}
+
+// ─────────────────────────────────────────────
+// ORDERS
+// ─────────────────────────────────────────────
+
+model Order {
+  id           String      @id @default(cuid())
+  status       OrderStatus @default(PENDING)
+
+  // Shipping details
+  fullName     String
+  email        String
+  phone        String
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  zipCode      String
+  country      String
+
+  totalPrice   Float
+  items        OrderItem[]
+
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id           String  @id @default(cuid())
+  quantity     Int
+  selectedSize String
+  priceAtTime  Float   // Price captured at checkout — important for order history
+
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId      String
+
+  product      Product @relation(fields: [productId], references: [id])
+  productId    String
+
+  @@map("order_items")
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum Category {
+  boys
+  girls
+  unisex
+}
+
+enum Collection {
+  loungewear
+  playground
+  basics
+}
+
+enum FitFeedback {
+  Runs_Small  @map("Runs Small")
+  True_to_Size @map("True to Size")
+  Runs_Large  @map("Runs Large")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+// ─────────────────────────────────────────────
+// AUTHENTICATION & USERS (Auth.js)
+// ─────────────────────────────────────────────
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String?         @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?         // Hashed password for credentials login
+  role          Role            @default(CUSTOMER)
+  accounts      Account[]
+  sessions      Session[]
+  
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@map("users")
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String  @map("user_id")
+  type               String
+  provider           String
+  providerAccountId  String  @map("provider_account_id")
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+ 
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@map("sessions")
+}
+ 
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}

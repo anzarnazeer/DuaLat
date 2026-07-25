@@ -81,7 +81,7 @@ export const MOCK_PRODUCTS: Product[] = [
     collection: 'loungewear',
     images: [
       'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=600',
-      'https://images.unsplash.com/photo-1544123089-c8d7bd6d8338?auto=format&fit=crop&q=80&w=600',
+      'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=600',
       'https://images.unsplash.com/photo-1622290319146-7b63df48a635?auto=format&fit=crop&q=80&w=600'
     ],
     fabricTags: ['100% Organic Cotton', 'Tagless/Itch-Free', 'Hypoallergenic', 'GOTS Certified'],
@@ -179,7 +179,7 @@ export const MOCK_PRODUCTS: Product[] = [
     collection: 'basics',
     images: [
       'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&q=80&w=600',
-      'https://images.unsplash.com/photo-1604073536770-8a33e332f877?auto=format&fit=crop&q=80&w=600'
+      'https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&q=80&w=600'
     ],
     fabricTags: ['100% Organic Muslin', 'Breathable Weave', 'Hypoallergenic'],
     fabricDetails: '100% Double-Weaved Organic Cotton Muslin. Light, airy, pre-washed for extra softness. Fastened with securely-sewn coconut shell buttons.',
@@ -213,7 +213,7 @@ export const MOCK_PRODUCTS: Product[] = [
     category: 'unisex',
     collection: 'loungewear',
     images: [
-      'https://images.unsplash.com/photo-1544123089-c8d7bd6d8338?auto=format&fit=crop&q=80&w=600',
+      'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=600',
       'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=600'
     ],
     fabricTags: ['Tagless/Itch-Free', 'Hypoallergenic', 'Super Stretch Knit'],
@@ -292,7 +292,7 @@ export const MOCK_PRODUCTS: Product[] = [
     category: 'unisex',
     collection: 'loungewear',
     images: [
-      'https://images.unsplash.com/photo-1544123089-c8d7bd6d8338?auto=format&fit=crop&q=80&w=600',
+      'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=600',
       'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=600'
     ],
     fabricTags: ['Grow-With-Me Cuffs', 'Organic Lining', 'Hypoallergenic'],
@@ -327,7 +327,7 @@ export const MOCK_PRODUCTS: Product[] = [
     category: 'girls',
     collection: 'playground',
     images: [
-      'https://images.unsplash.com/photo-1604073536770-8a33e332f877?auto=format&fit=crop&q=80&w=600',
+      'https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&q=80&w=600',
       'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&q=80&w=600'
     ],
     fabricTags: ['100% Organic Cotton', 'Tagless/Itch-Free', 'Super Soft Interlock'],
@@ -363,7 +363,7 @@ export const MOCK_PRODUCTS: Product[] = [
     collection: 'basics',
     images: [
       'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=600',
-      'https://images.unsplash.com/photo-1544123089-c8d7bd6d8338?auto=format&fit=crop&q=80&w=600'
+      'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=600'
     ],
     fabricTags: ['Tagless/Itch-Free', 'Kick-Proof Ankles', '100% Breathable Cotton'],
     fabricDetails: '100% Fine-Gauge Organic Cotton Knit. Anti-slip details on soles of booties for baby steps.',
@@ -394,7 +394,7 @@ export const CURATED_COLLECTIONS = [
     id: 'loungewear',
     title: 'Ultra-Soft Loungewear',
     description: 'Breathable, tagless, and stretch-comfy matching sets designed for sweet dreams and cozy roll-abouts.',
-    image: 'https://images.unsplash.com/photo-1544123089-c8d7bd6d8338?auto=format&fit=crop&q=80&w=600',
+    image: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=600',
     color: 'bg-baby-pink/30'
   },
   {

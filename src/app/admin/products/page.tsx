@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import {
   Plus, Search, Pencil, Trash2, Star, Package,
-  X, ChevronDown, Loader2, AlertCircle, Check,
+  X, ChevronDown, Loader2, AlertCircle, Check, Upload, Image as ImageIcon
 } from "lucide-react";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
@@ -84,7 +84,43 @@ function ProductModal({
       : EMPTY_FORM
   );
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState("");
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, index?: number) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    
+    setUploadingImage(true);
+    setError("");
+    try {
+      const response = await fetch(`/api/admin/upload?filename=${encodeURIComponent(file.name)}`, {
+        method: 'POST',
+        body: file,
+      });
+
+      if (!response.ok) throw new Error("Upload failed. Make sure Vercel Blob is configured.");
+      
+      const newBlob = await response.json();
+      
+      const arr = [...form.images];
+      if (index !== undefined) {
+        arr[index] = newBlob.url;
+      } else {
+        if (arr.length === 1 && arr[0] === "") {
+          arr[0] = newBlob.url;
+        } else {
+          arr.push(newBlob.url);
+        }
+      }
+      setForm(f => ({ ...f, images: arr }));
+    } catch (err: any) {
+      setError(err.message || "Failed to upload image.");
+    } finally {
+      setUploadingImage(false);
+      e.target.value = ""; // Reset input
+    }
+  };
 
   const set = (key: string, val: unknown) => setForm((f) => ({ ...f, [key]: val }));
 
@@ -172,21 +208,44 @@ function ProductModal({
           </div>
 
           {/* Images */}
-          <Field label="Image URLs">
-            <div className="space-y-2">
+          <Field label="Images (Upload or paste URL)">
+            <div className="space-y-3">
               {form.images.map((img, i) => (
-                <div key={i} className="flex gap-2">
+                <div key={i} className="flex gap-2 items-center">
+                  {img && img.startsWith('http') ? (
+                    <div className="w-12 h-12 rounded-lg bg-white/5 overflow-hidden flex-shrink-0 border border-white/10">
+                      <img src={img} alt="preview" className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 border border-white/10 text-white/20">
+                      <ImageIcon size={16} />
+                    </div>
+                  )}
                   <input className={inputCls} value={img} onChange={(e) => { const arr = [...form.images]; arr[i] = e.target.value; set("images", arr); }} placeholder="https://..." />
+                  
+                  {/* Upload Button for this specific index */}
+                  <label className="flex-shrink-0 cursor-pointer w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-violet-400 transition-all border border-white/5 shadow-sm">
+                    {uploadingImage ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, i)} disabled={uploadingImage} />
+                  </label>
+
                   {form.images.length > 1 && (
-                    <button onClick={() => set("images", form.images.filter((_, j) => j !== i))} className="w-9 h-9 flex-shrink-0 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center transition-all">
-                      <X size={13} />
+                    <button type="button" onClick={() => set("images", form.images.filter((_, j) => j !== i))} className="w-10 h-10 flex-shrink-0 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center transition-all border border-red-500/10">
+                      <X size={14} />
                     </button>
                   )}
                 </div>
               ))}
-              <button onClick={() => set("images", [...form.images, ""])} className="text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium">
-                + Add image URL
-              </button>
+              <div className="flex gap-3 pt-1">
+                <button type="button" onClick={() => set("images", [...form.images, ""])} className="text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium">
+                  + Add another URL
+                </button>
+                <span className="text-white/20 text-xs">|</span>
+                <label className="text-xs text-violet-400 hover:text-violet-300 transition-colors font-medium cursor-pointer">
+                  + Upload new image
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e)} disabled={uploadingImage} />
+                </label>
+              </div>
             </div>
           </Field>
 

@@ -20,9 +20,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
-        });
+        let user;
+        try {
+          console.log("[Auth] Attempting to find user:", credentials.email);
+          user = await prisma.user.findUnique({
+            where: { email: credentials.email as string },
+          });
+          console.log("[Auth] User lookup result:", user ? "Found" : "Not Found");
+        } catch (error) {
+          console.error("[Auth] Database connection error during login:", error);
+          return null;
+        }
 
         if (!user || !user.password) {
           return null;

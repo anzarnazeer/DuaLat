@@ -18,8 +18,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
-import type { Prisma } from "@/generated/prisma/client";
-import { FitFeedback } from "@/generated/prisma/enums";
+import type { Prisma } from "@prisma/client";
+import { FitFeedback } from "@prisma/client";
 
 // Define the shape of the request body we expect
 interface ReviewInput {

@@ -11,7 +11,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
-import type { Product, SizeStock } from "@/generated/prisma/client";
+import type { Product, SizeStock } from "@prisma/client";
 
 type ProductWithSizes = Product & { sizes: SizeStock[] };
 

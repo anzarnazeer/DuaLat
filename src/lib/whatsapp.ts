@@ -1,68 +1,60 @@
 import twilio from "twilio";
 
-// Initialize Twilio client only if credentials exist
+// These variables must be set in your .env or Vercel environment
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-const fromNumber = process.env.TWILIO_WHATSAPP_NUMBER;
+const twilioWhatsAppNumber = process.env.TWILIO_WHATSAPP_NUMBER; // e.g., 'whatsapp:+14155238886'
 
-const client = accountSid && authToken ? twilio(accountSid, authToken) : null;
-
-/**
- * Sends a WhatsApp notification to the customer when their order status changes.
- */
-export async function sendOrderStatusWhatsApp(
+export async function sendWhatsAppUpdate(
   customerPhone: string,
   customerName: string,
   orderId: string,
   status: string
 ) {
-  if (!client || !fromNumber) {
-    console.log(
-      "[WhatsApp] Skipping notification: Twilio credentials not configured in environment variables."
-    );
-    return;
-  }
-
-  // Format phone number to E.164 format if not already (Twilio requires this)
-  // Assuming customerPhone might be like "555-1234", we strip non-digits. 
-  // In a real app, you'd ensure the phone number is collected with country code (e.g. +1).
-  let formattedPhone = customerPhone.replace(/[^\d+]/g, '');
-  if (!formattedPhone.startsWith('+')) {
-    // Default to US country code if none provided for testing
-    formattedPhone = `+1${formattedPhone}`;
-  }
-
-  const shortOrderId = orderId.slice(-8).toUpperCase();
-  const firstName = customerName.split(" ")[0];
-
-  let message = `Hi ${firstName}! `;
-
-  switch (status) {
-    case "CONFIRMED":
-      message += `Great news! Your Dualat Kids Wear order #${shortOrderId} has been confirmed. We're getting it ready for you!`;
-      break;
-    case "SHIPPED":
-      message += `Your order #${shortOrderId} has just shipped! 🚚 It's on its way to you now.`;
-      break;
-    case "DELIVERED":
-      message += `Yay! Your order #${shortOrderId} has been delivered. We hope you and your little one love it! ❤️`;
-      break;
-    case "CANCELLED":
-      message += `Your order #${shortOrderId} has been cancelled. If you have any questions, please contact our support team.`;
-      break;
-    default:
-      message += `Your order #${shortOrderId} status has been updated to: ${status}.`;
-      break;
+  if (!accountSid || !authToken || !twilioWhatsAppNumber) {
+    console.warn("Twilio credentials missing. Skipping WhatsApp notification.");
+    return false;
   }
 
   try {
-    const response = await client.messages.create({
-      body: message,
-      from: `whatsapp:${fromNumber}`,
-      to: `whatsapp:${formattedPhone}`,
+    const client = twilio(accountSid, authToken);
+    
+    // Format the phone number. Twilio requires E.164 format (e.g., +1234567890)
+    // We assume the user entered their number with country code, if not, you might need a parsing library.
+    const formattedPhone = customerPhone.startsWith('+') ? customerPhone : `+${customerPhone.replace(/\D/g, '')}`;
+
+    let messageBody = `Hi ${customerName},\n\nUpdate on your DuaLat order #${orderId.slice(-8).toUpperCase()}:\n`;
+    
+    switch (status) {
+      case "CONFIRMED":
+        messageBody += `Your order has been confirmed and is being processed! We will notify you when it ships. 📦✨`;
+        break;
+      case "SHIPPED":
+        messageBody += `Great news! Your order has shipped and is on its way to you. 🚚💨`;
+        break;
+      case "DELIVERED":
+        messageBody += `Your order has been delivered! We hope you and your little one love the clothes. 🧸💖`;
+        break;
+      case "CANCELLED":
+        messageBody += `Your order has been cancelled. If this was a mistake, please contact our support. 🛑`;
+        break;
+      default:
+        messageBody += `Your order status is now: ${status}`;
+        break;
+    }
+
+    messageBody += `\n\nThank you for shopping with DuaLat Kids Wear! 🌿`;
+
+    const message = await client.messages.create({
+      body: messageBody,
+      from: twilioWhatsAppNumber, // This must be a Twilio WhatsApp Sandbox or verified number
+      to: `whatsapp:${formattedPhone}`
     });
-    console.log(`[WhatsApp] Sent message to ${formattedPhone}. SID: ${response.sid}`);
+
+    console.log(`WhatsApp message sent to ${formattedPhone}. SID: ${message.sid}`);
+    return true;
   } catch (error) {
-    console.error(`[WhatsApp] Failed to send message to ${formattedPhone}:`, error);
+    console.error("Failed to send WhatsApp message:", error);
+    return false;
   }
 }

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useShop } from '@/context/ShopContext';
 import type { Product } from '@/lib/mockData';
-import { Search, ShoppingBag, Menu, X, ChevronDown, Sparkles, User, Heart } from 'lucide-react';
+import { Search, ShoppingBag, Menu, X, ChevronDown, Sparkles, User, Heart, Package } from 'lucide-react';
 
 export default function Navbar() {
   const router = useRouter();
@@ -209,13 +209,22 @@ export default function Navbar() {
                   Login / Signup
                 </button>
                 <div className="border-t border-cream-300 pt-3 space-y-2 text-xs font-semibold text-[#3e4152]">
-                  <Link href="/shop" className="block hover:font-bold hover:text-primary-500 transition-colors">Orders</Link>
+                  <Link href="/track" className="block hover:font-bold hover:text-primary-500 transition-colors">Track Order</Link>
                   <Link href="/shop" className="block hover:font-bold hover:text-primary-500 transition-colors">Wishlist</Link>
                   <Link href="/shop" className="block hover:font-bold hover:text-primary-500 transition-colors">Gift Cards</Link>
                   <Link href="/shop" className="block hover:font-bold hover:text-primary-500 transition-colors">Contact Us</Link>
                 </div>
               </div>
             </div>
+
+            {/* Track Order */}
+            <Link 
+              href="/track" 
+              className="hidden sm:flex flex-col items-center justify-center h-20 cursor-pointer text-charcoal hover:text-primary-500 transition-colors"
+            >
+              <Package size={18} className="stroke-[1.8]" />
+              <span className="text-[10px] font-bold mt-1 tracking-wide">Track</span>
+            </Link>
 
             {/* Wishlist */}
             <Link 

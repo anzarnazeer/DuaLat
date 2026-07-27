@@ -36,7 +36,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Sparkles size={14} className="text-white" />
             </div>
             <div>
-              <div className="font-bold text-sm text-white tracking-tight">SproutWear</div>
+              <div className="font-bold text-sm text-white tracking-tight">DuaLat</div>
               <div className="text-[10px] text-white/40 font-medium uppercase tracking-widest">Admin Console</div>
             </div>
           </div>

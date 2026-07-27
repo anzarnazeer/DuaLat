@@ -34,12 +34,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 
   if (!product) {
-    return { title: 'Product Not Found | SproutWear' };
+    return { title: 'Product Not Found | DuaLat' };
   }
 
   return {
-    title: `${product.name} | SproutWear Organic Kids' Wear`,
-    description: `${product.description} Safety details: ${product.fabricTags.join(', ')}.`,
+    title: `${product.name} | DuaLat Organic Kids' Wear Kerala`,
+    description: `Shop ${product.name} in Kerala. ${product.description} Perfect for babies and toddlers 6 months to 5 years. Features: ${product.fabricTags.join(', ')}.`,
+    keywords: [product.name, "kids wear Kerala", "baby clothes online", "toddler fashion Kerala"],
+    openGraph: {
+      title: `${product.name} | DuaLat Organic Kids' Wear Kerala`,
+      description: `Shop ${product.name} in Kerala. Perfect for babies and toddlers 6 months to 5 years.`
+    }
   };
 }
 
@@ -62,6 +67,29 @@ export default async function ProductPage({ params }: PageProps) {
     notFound();
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": product.name,
+    "image": product.images,
+    "description": product.description,
+    "brand": {
+      "@type": "Brand",
+      "name": "DuaLat"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": `https://dua-lat.vercel.app/product/${product.id}`,
+      "priceCurrency": "INR",
+      "price": product.salePrice || product.basePrice,
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "DuaLat"
+      }
+    }
+  };
+
   // CONCEPT: We pass the DB result to a Client Component for interactivity.
   // Server Components handle data fetching; Client Components handle user interactions
   // (like selecting sizes, adding to cart, submitting reviews).
@@ -71,6 +99,10 @@ export default async function ProductPage({ params }: PageProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (
     <div className="py-2">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <ProductDetailClient product={product as any} />
     </div>
   );

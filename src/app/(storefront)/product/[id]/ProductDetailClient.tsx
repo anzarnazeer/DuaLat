@@ -139,7 +139,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           
           {/* Header titles */}
           <div className="space-y-1.5 border-b border-cream-300 pb-4">
-            <h1 className="font-assistant text-xl font-black text-[#282c3f] tracking-wide uppercase">SproutWear</h1>
+            <h1 className="font-assistant text-xl font-black text-[#282c3f] tracking-wide uppercase">DuaLat</h1>
             <p className="text-base text-gray-500 font-medium">{product.name}</p>
             
             {/* Rating pill */}
@@ -156,12 +156,12 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           {/* Pricing */}
           <div className="flex items-baseline gap-3 pt-2">
             <span className="text-2xl font-extrabold text-[#282c3f]">
-              ${price.toFixed(2)}
+              ₹{price.toFixed(2)}
             </span>
             {isSale && (
               <>
                 <span className="text-sm text-gray-400 line-through">
-                  ${product.basePrice.toFixed(2)}
+                  ₹{product.basePrice.toFixed(2)}
                 </span>
                 <span className="text-base font-extrabold text-accent-400">
                   ({discountPercent}% OFF)

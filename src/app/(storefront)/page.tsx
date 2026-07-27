@@ -33,7 +33,7 @@ const MOCK_TESTIMONIALS = [
     parentName: "Elena Rostova",
     childAge: "Newborn",
     rating: 5,
-    comment: "The tagless interior is amazing. Other brands left red marks on my baby's neck, but SproutWear is completely itch-free. Very high quality organic cotton.",
+    comment: "The tagless interior is amazing. Other brands left red marks on my baby's neck, but DuaLat is completely itch-free. Very high quality organic cotton.",
     verified: true,
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
   }
@@ -54,7 +54,7 @@ const HERO_SLIDES = [
     id: 2,
     title: "PLAYGROUND PROOF GEAR",
     subtitle: "DURABLE WAIST JOGGERS & TOUGH KNEES",
-    offer: "UNDER $45",
+    offer: "UNDER ₹45",
     cta: "Explore Activewear",
     image: "https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&q=80&w=1200",
     tag: "BUDGET BUYS",
@@ -74,9 +74,9 @@ const HERO_SLIDES = [
 
 const DEALS = [
   { id: 'deal-1', title: 'ORGANIC ROMPERS', discount: 'FLAT 20% OFF', image: 'https://images.unsplash.com/photo-1622290319146-7b63df48a635?auto=format&fit=crop&q=80&w=400', link: 'loungewear' },
-  { id: 'deal-2', title: 'TOUGH JOGGERS', discount: 'UNDER $45', image: 'https://images.unsplash.com/photo-1519457497969-58b76ec1ec8b?auto=format&fit=crop&q=80&w=400', link: 'playground' },
+  { id: 'deal-2', title: 'TOUGH JOGGERS', discount: 'UNDER ₹45', image: 'https://images.unsplash.com/photo-1519457497969-58b76ec1ec8b?auto=format&fit=crop&q=80&w=400', link: 'playground' },
   { id: 'deal-3', title: 'AIRY MUSLIN DRESSES', discount: 'MIN. 15% OFF', image: 'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&q=80&w=400', link: 'basics' },
-  { id: 'deal-4', title: 'SOFT ACCESSORIES', discount: 'STARTING AT $24', image: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=400', link: 'basics' }
+  { id: 'deal-4', title: 'SOFT ACCESSORIES', discount: 'STARTING AT ₹24', image: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=400', link: 'basics' }
 ];
 
 export default function Home() {
@@ -409,6 +409,50 @@ export default function Home() {
             </div>
           </div>
 
+        </div>
+      </section>
+
+      {/* Meet the Founder Section */}
+      <section className="bg-white rounded p-8 sm:p-12 border border-cream-300 grid grid-cols-1 md:grid-cols-2 gap-10 items-center overflow-hidden relative">
+        <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none text-primary-500">
+          <Heart size={200} />
+        </div>
+        
+        <div className="order-2 md:order-1 space-y-6 relative z-10">
+          <div className="space-y-2">
+            <h2 className="font-assistant text-2xl md:text-3xl font-black text-charcoal uppercase tracking-wider">Meet the Founder</h2>
+            <div className="h-1 w-12 bg-primary-500 rounded"></div>
+          </div>
+          
+          <div className="space-y-4 text-sm text-[#696e79] leading-relaxed">
+            <p>
+              Hi, I'm <strong className="text-charcoal font-bold">Asna</strong>, a young entrepreneur and a proud mother of a beautiful 1-year-old girl.
+            </p>
+            <p>
+              When I had my daughter, I struggled to find clothes in Kerala that were both stylish and gentle on her sensitive skin. That struggle became my mission. I founded DuaLat to bring premium, frictionless, and hypoallergenic kids' wear to parents like you and me.
+            </p>
+            <p>
+              At DuaLat, our goal is simple: to provide the highest quality GOTS-certified organic clothing for babies and toddlers aged 6 months to 5 years. Every piece in our collection is chosen with the same care and love I have for my own daughter. Thank you for supporting a mother's dream.
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-4 pt-2">
+            <div className="h-12 w-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-500">
+              <span className="text-xl">👩‍👧</span>
+            </div>
+            <div>
+              <p className="font-bold text-charcoal text-sm uppercase tracking-wider">Asna</p>
+              <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Founder, DuaLat</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="order-1 md:order-2">
+          <img 
+            src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=800" 
+            alt="Asna - Founder of DuaLat" 
+            className="w-full h-80 object-cover rounded-xl shadow-lg border border-cream-200"
+          />
         </div>
       </section>
 

@@ -116,7 +116,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         
         {/* Brand name */}
         <div className="text-[11px] font-extrabold text-charcoal tracking-widest uppercase mb-0.5">
-          SproutWear
+          DuaLat
         </div>
 
         {/* Product Title */}
@@ -142,12 +142,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="mt-auto pt-2 border-t border-cream-200 flex items-center justify-between">
           <div className="flex items-baseline gap-1.5">
             <span className="text-[13px] font-extrabold text-[#282c3f]">
-              ${price.toFixed(2)}
+              ₹{price.toFixed(2)}
             </span>
             {isSale && (
               <>
                 <span className="text-[10px] text-gray-400 line-through">
-                  ${product.basePrice.toFixed(2)}
+                  ₹{product.basePrice.toFixed(2)}
                 </span>
                 <span className="text-[10px] font-bold text-accent-400">
                   ({discountPercent}% OFF)

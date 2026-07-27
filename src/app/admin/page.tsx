@@ -56,7 +56,7 @@ export default function AdminDashboard() {
   const KPI_CARDS = [
     {
       label: "Total Revenue",
-      value: stats ? `$${stats.totalRevenue.toFixed(2)}` : "—",
+      value: stats ? `₹${stats.totalRevenue.toFixed(2)}` : "—",
       icon: DollarSign,
       color: "from-emerald-500 to-teal-500",
       shadow: "shadow-emerald-500/20",
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${STATUS_COLORS[order.status]}`}>
                     {order.status}
                   </span>
-                  <span className="text-sm font-bold text-white">${order.totalPrice.toFixed(2)}</span>
+                  <span className="text-sm font-bold text-white">₹{order.totalPrice.toFixed(2)}</span>
                 </div>
               </div>
             ))}

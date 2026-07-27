@@ -79,7 +79,7 @@ export default function MiniCart() {
               <p className="text-[10px] text-gray-600 text-center font-bold uppercase tracking-wider mb-2">
                 {isFreeShipping 
                   ? "🎉 You've unlocked Free Shipping!" 
-                  : `Spend $${(freeShippingThreshold - cartTotal).toFixed(2)} more for Free Shipping`
+                  : `Spend ₹${(freeShippingThreshold - cartTotal).toFixed(2)} more for Free Shipping`
                 }
               </p>
               <div className="w-full bg-cream-300 h-1.5 rounded-full overflow-hidden">
@@ -146,7 +146,7 @@ export default function MiniCart() {
                             </div>
                             {/* Price */}
                             <div className="text-right shrink-0">
-                              <span className="text-xs font-black text-[#282c3f]">${(price * item.quantity).toFixed(2)}</span>
+                              <span className="text-xs font-black text-[#282c3f]">₹{(price * item.quantity).toFixed(2)}</span>
                             </div>
                           </div>
                         </div>
@@ -173,7 +173,7 @@ export default function MiniCart() {
                             <img src={product.images[0]} alt={product.name} className="h-12 w-9 rounded object-cover shrink-0" />
                             <div>
                               <p className="text-[11px] font-bold text-charcoal truncate max-w-44">{product.name}</p>
-                              <p className="text-[10px] text-primary-500 font-extrabold">${price.toFixed(2)}</p>
+                              <p className="text-[10px] text-primary-500 font-extrabold">₹{price.toFixed(2)}</p>
                             </div>
                           </div>
                           <button
@@ -196,18 +196,18 @@ export default function MiniCart() {
                 <div className="space-y-2 text-xs font-semibold text-gray-500">
                   <div className="flex justify-between items-center">
                     <span>Bag Total</span>
-                    <span className="font-bold text-charcoal">${cartTotal.toFixed(2)}</span>
+                    <span className="font-bold text-charcoal">₹{cartTotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Shipping Fee</span>
                     <span className="text-secondary-600 font-bold">
-                      {isFreeShipping ? 'FREE' : '$4.99'}
+                      {isFreeShipping ? 'FREE' : '₹4.99'}
                     </span>
                   </div>
                   <div className="border-t border-cream-300 pt-3 flex justify-between items-center">
                     <span className="text-charcoal font-black text-xs uppercase tracking-wider">Order Total</span>
                     <span className="text-lg font-black text-primary-500">
-                      ${(isFreeShipping ? cartTotal : cartTotal + 4.99).toFixed(2)}
+                      ₹{(isFreeShipping ? cartTotal : cartTotal + 4.99).toFixed(2)}
                     </span>
                   </div>
                 </div>

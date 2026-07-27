@@ -61,6 +61,7 @@ export default function Footer() {
           <div>
             <span className="font-assistant text-[10px] font-extrabold tracking-widest text-[#282c3f] uppercase">Useful Links</span>
             <ul className="mt-4 space-y-2 text-xs font-semibold text-gray-500">
+              <li><Link href="/track" className="hover:text-primary-500 transition-colors">Track Order</Link></li>
               <li><Link href="/shop" className="hover:text-primary-500 transition-colors">Size Guide Calculator</Link></li>
               <li><Link href="/shop" className="hover:text-primary-500 transition-colors">Fabric Safety Standards</Link></li>
               <li><Link href="/shop" className="hover:text-primary-500 transition-colors">Parent Blog</Link></li>
@@ -89,10 +90,17 @@ export default function Footer() {
 
         </div>
 
+        {/* Localized SEO Blurb */}
+        <div className="mt-12 pt-8 border-t border-cream-300 text-center max-w-4xl mx-auto">
+          <p className="text-[10px] text-gray-400 leading-relaxed font-medium">
+            <strong className="text-gray-500">DuaLat Kids Wear</strong> is Kerala's premium destination for organic, hypoallergenic baby and toddler clothing. Based proudly in Kerala, we specialize in high-quality fashion for children aged 6 months to 5 years. From breathable summer rompers to cozy winter wear, our collections are designed with love by a mother, for mothers. Shop the best kids wear in Kerala online today.
+          </p>
+        </div>
+
         {/* Brand Copyright */}
-        <div className="mt-12 border-t border-cream-300 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="mt-8 border-t border-cream-300 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
-            &copy; {new Date().getFullYear()} SproutWear Inc. Made with love for happy kids.
+            &copy; {new Date().getFullYear()} DuaLat Inc. Made with love for happy kids.
           </p>
           <div className="flex space-x-6 text-[11px] text-gray-400 font-bold uppercase tracking-wider">
             <Link href="/shop" className="hover:text-primary-500">Privacy Policy</Link>

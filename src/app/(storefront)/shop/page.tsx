@@ -258,7 +258,7 @@ export default function ShopPage() {
           <div className="space-y-3 pt-5 border-t border-cream-300">
             <div className="flex justify-between items-center text-[10px] font-extrabold text-[#282c3f] uppercase tracking-wider">
               <span>Max Price</span>
-              <span className="text-primary-500 bg-primary-50 px-2 py-0.5 rounded border border-primary-100 font-extrabold">${maxPrice}</span>
+              <span className="text-primary-500 bg-primary-50 px-2 py-0.5 rounded border border-primary-100 font-extrabold">₹{maxPrice}</span>
             </div>
             <input
               type="range"
@@ -270,8 +270,8 @@ export default function ShopPage() {
               className="w-full h-1.5 bg-cream-200 rounded-lg appearance-none cursor-pointer accent-primary-500"
             />
             <div className="flex justify-between text-[8px] text-gray-400 font-bold px-1 uppercase tracking-wide">
-              <span>$20</span>
-              <span>$60</span>
+              <span>₹20</span>
+              <span>₹60</span>
             </div>
           </div>
 
@@ -437,7 +437,7 @@ export default function ShopPage() {
               <div className="space-y-3 border-t border-cream-300 pt-5">
                 <div className="flex justify-between items-center text-[10px] font-extrabold text-[#282c3f] uppercase tracking-wider">
                   <span>Max Price</span>
-                  <span className="text-primary-500 bg-primary-50 px-2 py-0.5 rounded font-extrabold">${maxPrice}</span>
+                  <span className="text-primary-500 bg-primary-50 px-2 py-0.5 rounded font-extrabold">₹{maxPrice}</span>
                 </div>
                 <input
                   type="range"

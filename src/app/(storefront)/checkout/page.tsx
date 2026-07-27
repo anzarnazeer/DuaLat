@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
-import { UserAddress, PaymentDetails } from '@/lib/mockData';
-import { Check, CreditCard, Truck, User, ArrowLeft, ArrowRight, ShieldCheck, ShoppingCart } from 'lucide-react';
+import { UserAddress } from '@/lib/mockData';
+import { Check, CreditCard, Truck, User, ArrowLeft, ArrowRight, ShieldCheck, ShoppingCart, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CheckoutPage() {
@@ -34,13 +34,6 @@ export default function CheckoutPage() {
     country: 'United States'
   });
 
-  // Payment State
-  const [payment, setPayment] = useState<PaymentDetails>({
-    cardholderName: '',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: ''
-  });
 
   // Calculate pricing
   const freeShippingThreshold = 50;
@@ -58,9 +51,6 @@ export default function CheckoutPage() {
     setAddress({ ...address, [e.target.name]: e.target.value });
   };
 
-  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPayment({ ...payment, [e.target.name]: e.target.value });
-  };
 
   // Basic step navigation
   const nextStep = () => {
@@ -83,10 +73,6 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!payment.cardholderName || !payment.cardNumber || !payment.expiryDate || !payment.cvv) {
-      alert("Please fill out all payment details.");
-      return;
-    }
 
     setIsSubmitting(true);
 
@@ -130,6 +116,9 @@ export default function CheckoutPage() {
       setIsSubmitting(false);
       setIsOrdered(true);
       setOrderNumber(data.orderId); // Real order ID from the database
+      
+      const message = `Hello DuaLat!\n\nI have placed an order.\n*Order ID:* ${data.orderId}\n*Name:* ${address.fullName}\n*Total Amount:* ₹${totalCost.toFixed(2)}\n\nI can track my order here: ${window.location.origin}/track?id=${data.orderId}\n\nPlease let me know the payment details.`;
+      window.location.href = `https://wa.me/918848422023?text=${encodeURIComponent(message)}`;
     } catch (err) {
       console.error('Checkout error:', err);
       alert('Network error. Please check your connection and try again.');
@@ -221,50 +210,30 @@ export default function CheckoutPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-xl mx-auto bg-white p-8 sm:p-10 rounded-3xl border border-cream-200 shadow-xl text-center space-y-6"
         >
-          <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-secondary-100 text-secondary-500 border border-secondary-200">
-            <Check size={40} className="animate-pulse" />
+          <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-green-500 border border-green-200">
+            <MessageCircle size={40} className="animate-bounce" />
           </div>
           
           <div className="space-y-2">
-            <h1 className="font-nunito text-3xl font-black text-charcoal">Order Placed Successfully!</h1>
-            <p className="text-sm text-gray-500 font-medium">Thank you for shopping with SproutWear. Your order details are below.</p>
+            <h1 className="font-nunito text-3xl font-black text-charcoal">Redirecting to WhatsApp...</h1>
+            <p className="text-sm text-gray-500 font-medium">Please complete your payment directly with us to confirm your order.</p>
           </div>
 
-          <div className="p-4 bg-cream-100/50 rounded-2xl border border-cream-200 text-left space-y-2 text-xs">
-            <p className="text-gray-400 font-bold">ORDER DETAILS</p>
-            <div className="flex justify-between font-bold text-charcoal">
-              <span>Order Number:</span>
-              <span className="text-primary-600">{orderNumber}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Estimated Delivery:</span>
-              <span className="font-semibold text-charcoal">
-                {shippingMethod === 'express' ? '2-3 Business Days' : '5-7 Business Days'}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span>Deliver to:</span>
-              <span className="font-semibold text-charcoal">{address.fullName}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Confirmation Email:</span>
-              <span className="font-semibold text-charcoal">{address.email}</span>
-            </div>
+          <div className="pt-4 border-t border-cream-100 flex flex-col gap-3">
+            <p className="text-xs text-gray-400">If you are not redirected automatically within 3 seconds, please click the button below.</p>
+            <a 
+              href={`https://wa.me/918848422023?text=${encodeURIComponent(`Hello DuaLat!\n\nI have placed an order.\n*Order ID:* ${orderNumber}\n*Name:* ${address.fullName}\n*Total Amount:* ₹${totalCost.toFixed(2)}\n\nI can track my order here: ${window.location.origin}/track?id=${orderNumber}\n\nPlease let me know the payment details.`)}`}
+              className="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold px-6 py-4 rounded-2xl shadow-md transition-all w-full"
+            >
+              <MessageCircle size={20} /> Complete Payment on WhatsApp
+            </a>
+            <button
+              onClick={handleCompleteFlow}
+              className="inline-flex items-center justify-center gap-2 border border-cream-200 hover:bg-cream-50 text-charcoal font-bold px-6 py-4 rounded-2xl transition-all w-full"
+            >
+              Return to Home
+            </button>
           </div>
-
-          <div className="text-center p-3 bg-secondary-50 border border-secondary-200/50 rounded-2xl flex items-center justify-center gap-2">
-            <span className="text-lg">🎁</span>
-            <p className="text-[11px] font-bold text-secondary-700 leading-normal">
-              A gift-wrapped package notification has been sent! You can track your shipment on the parent dashboard.
-            </p>
-          </div>
-
-          <button
-            onClick={handleCompleteFlow}
-            className="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-3.5 px-6 rounded-2xl shadow-md transition-all cursor-pointer"
-          >
-            Clear Cart & Go Home
-          </button>
         </motion.div>
       ) : (
         /* Standard Checkout Layout */
@@ -417,7 +386,7 @@ export default function CheckoutPage() {
                         </div>
                       </div>
                       <span className="text-sm font-black text-charcoal">
-                        {isFreeShippingEligible ? 'FREE' : '$4.99'}
+                        {isFreeShippingEligible ? 'FREE' : '₹4.99'}
                       </span>
                     </label>
 
@@ -441,7 +410,7 @@ export default function CheckoutPage() {
                         </div>
                       </div>
                       <span className="text-sm font-black text-charcoal">
-                        {isFreeShippingEligible ? '$5.00' : '$9.99'}
+                        {isFreeShippingEligible ? '₹5.00' : '₹9.99'}
                       </span>
                     </label>
                   </div>
@@ -467,68 +436,17 @@ export default function CheckoutPage() {
               {step === 3 && (
                 <form onSubmit={handlePlaceOrder} className="space-y-6">
                   <h2 className="font-nunito text-lg font-bold text-charcoal flex items-center gap-2 border-b border-cream-100 pb-3">
-                    <CreditCard size={20} className="text-accent-500" /> Payment Details
+                    <MessageCircle size={20} className="text-[#25D366]" /> Payment Method
                   </h2>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1 sm:col-span-2">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase">Cardholder Name *</label>
-                      <input
-                        type="text"
-                        name="cardholderName"
-                        value={payment.cardholderName}
-                        onChange={handlePaymentChange}
-                        placeholder="John Doe"
-                        required
-                        className="w-full rounded-xl border border-cream-200 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
-                      />
+                  <div className="p-5 bg-green-50 rounded-2xl border border-green-200 text-sm text-green-800 leading-relaxed flex flex-col items-center gap-3 text-center">
+                    <div className="w-14 h-14 bg-white text-[#25D366] rounded-full flex items-center justify-center shadow-sm">
+                      <MessageCircle size={28} />
                     </div>
-                    <div className="space-y-1 sm:col-span-2">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase">Card Number *</label>
-                      <input
-                        type="text"
-                        name="cardNumber"
-                        value={payment.cardNumber}
-                        onChange={handlePaymentChange}
-                        placeholder="4111 2222 3333 4444"
-                        maxLength={19}
-                        required
-                        className="w-full rounded-xl border border-cream-200 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
-                      />
+                    <div>
+                      <p className="font-bold text-base mb-1">Pay via WhatsApp</p>
+                      <p className="text-green-700/80">Once you place your order, you will be securely redirected to our WhatsApp to complete your payment directly.</p>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase">Expiry Date *</label>
-                      <input
-                        type="text"
-                        name="expiryDate"
-                        value={payment.expiryDate}
-                        onChange={handlePaymentChange}
-                        placeholder="MM/YY"
-                        maxLength={5}
-                        required
-                        className="w-full rounded-xl border border-cream-200 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase">CVV *</label>
-                      <input
-                        type="text"
-                        name="cvv"
-                        value={payment.cvv}
-                        onChange={handlePaymentChange}
-                        placeholder="123"
-                        maxLength={3}
-                        required
-                        className="w-full rounded-xl border border-cream-200 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="p-3.5 bg-cream-100 rounded-2xl border border-cream-200 text-xs text-gray-400 leading-normal flex items-start gap-2">
-                    <ShieldCheck size={16} className="text-secondary-500 shrink-0 mt-0.5" />
-                    <p>
-                      <strong>Mock Payment Mode:</strong> This page is integrated into a secure mock merchant portal. No actual card charging will occur.
-                    </p>
                   </div>
 
                   <div className="flex justify-between pt-4 border-t border-cream-100">
@@ -543,20 +461,21 @@ export default function CheckoutPage() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="inline-flex items-center justify-center gap-2 bg-secondary-500 hover:bg-secondary-600 text-white font-bold px-6 py-3 rounded-2xl shadow-md min-w-44 transition-colors cursor-pointer disabled:opacity-50"
+                      className="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold px-6 py-3 rounded-2xl shadow-md min-w-44 transition-colors cursor-pointer disabled:opacity-50"
                     >
                       {isSubmitting ? (
                         <span className="flex items-center gap-2">
                           <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
-                          Authorizing...
+                          Processing...
                         </span>
                       ) : (
-                        `Authorize Payment • $${totalCost.toFixed(2)}`
+                        `Place Order • ₹${totalCost.toFixed(2)}`
                       )}
                     </button>
                   </div>
                 </form>
               )}
+
 
             </div>
           </div>
@@ -584,7 +503,7 @@ export default function CheckoutPage() {
                         <p className="font-bold text-charcoal truncate">{item.product.name}</p>
                         <p className="text-gray-400 mt-0.5">Size: {item.selectedSize} • Qty: {item.quantity}</p>
                       </div>
-                      <span className="font-bold text-charcoal shrink-0">${(price * item.quantity).toFixed(2)}</span>
+                      <span className="font-bold text-charcoal shrink-0">₹{(price * item.quantity).toFixed(2)}</span>
                     </div>
                   );
                 })}
@@ -594,21 +513,21 @@ export default function CheckoutPage() {
               <div className="border-t border-cream-100 pt-4 space-y-2 text-xs font-semibold text-gray-500">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="text-charcoal font-bold">${subtotal.toFixed(2)}</span>
+                  <span className="text-charcoal font-bold">₹{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping ({shippingMethod === 'express' ? 'Express' : 'Standard'})</span>
                   <span className={shippingCost === 0 ? 'text-secondary-600 font-bold' : 'text-charcoal font-bold'}>
-                    {shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}`}
+                    {shippingCost === 0 ? 'FREE' : `₹${shippingCost.toFixed(2)}`}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Estimated Tax (8%)</span>
-                  <span className="text-charcoal font-bold">${estimatedTax.toFixed(2)}</span>
+                  <span className="text-charcoal font-bold">₹{estimatedTax.toFixed(2)}</span>
                 </div>
                 <div className="border-t border-cream-100 pt-3 flex justify-between items-center text-sm">
                   <span className="text-charcoal font-black">Grand Total</span>
-                  <span className="text-lg font-black text-primary-600">${totalCost.toFixed(2)}</span>
+                  <span className="text-lg font-black text-primary-600">₹{totalCost.toFixed(2)}</span>
                 </div>
               </div>
 

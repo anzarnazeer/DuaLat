@@ -79,7 +79,7 @@ function OrderRow({ order, onStatusChange }: { order: Order; onStatusChange: (id
           </div>
         </td>
         <td className="px-5 py-4">
-          <span className="text-sm font-bold text-white">${order.totalPrice.toFixed(2)}</span>
+          <span className="text-sm font-bold text-white">₹{order.totalPrice.toFixed(2)}</span>
         </td>
         <td className="px-5 py-4">
           <StatusBadge status={order.status} />
@@ -120,7 +120,7 @@ function OrderRow({ order, onStatusChange }: { order: Order; onStatusChange: (id
                         <p className="text-xs text-white/40">Size: {item.selectedSize} × {item.quantity}</p>
                       </div>
                       <span className="text-sm font-bold text-white flex-shrink-0">
-                        ${(item.priceAtTime * item.quantity).toFixed(2)}
+                        ₹{(item.priceAtTime * item.quantity).toFixed(2)}
                       </span>
                     </div>
                   ))}

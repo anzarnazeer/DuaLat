@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
-import { sendWhatsAppUpdate } from "@/lib/whatsapp";
 
 export async function PATCH(
   request: NextRequest,
@@ -20,16 +19,6 @@ export async function PATCH(
       where: { id },
       data: { status },
     });
-
-    // Send WhatsApp notification
-    if (order.status !== "PENDING") {
-      await sendWhatsAppUpdate(
-        order.phone,
-        order.fullName,
-        order.id,
-        order.status
-      );
-    }
 
     return NextResponse.json(order);
   } catch (error) {

@@ -455,11 +455,11 @@ export default function AdminProductsPage() {
                       <div>
                         {p.salePrice ? (
                           <>
-                            <span className="text-sm font-bold text-emerald-400">${p.salePrice.toFixed(2)}</span>
-                            <span className="text-xs text-white/30 line-through ml-1.5">${p.basePrice.toFixed(2)}</span>
+                            <span className="text-sm font-bold text-emerald-400">₹{p.salePrice.toFixed(2)}</span>
+                            <span className="text-xs text-white/30 line-through ml-1.5">₹{p.basePrice.toFixed(2)}</span>
                           </>
                         ) : (
-                          <span className="text-sm font-bold text-white">${p.basePrice.toFixed(2)}</span>
+                          <span className="text-sm font-bold text-white">₹{p.basePrice.toFixed(2)}</span>
                         )}
                       </div>
                     </td>

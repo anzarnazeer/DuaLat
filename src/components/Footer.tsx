@@ -52,9 +52,9 @@ export default function Footer() {
             <span className="font-assistant text-[10px] font-extrabold tracking-widest text-[#282c3f] uppercase">Online Shopping</span>
             <ul className="mt-4 space-y-2 text-xs font-semibold text-gray-500">
               <li><Link href="/shop" className="hover:text-primary-500 transition-colors">All Clothing</Link></li>
-              <li><Link href="/shop" className="hover:text-primary-500 transition-colors">Baby Boys</Link></li>
+              <li className="flex items-center gap-1.5"><span className="text-gray-400 cursor-not-allowed">Baby Boys</span> <span className="text-[8px] bg-cream-200 text-gray-500 px-1 py-0.5 rounded-sm normal-case tracking-normal font-bold">Soon</span></li>
               <li><Link href="/shop" className="hover:text-primary-500 transition-colors">Baby Girls</Link></li>
-              <li><Link href="/shop" className="hover:text-primary-500 transition-colors">Unisex Basics</Link></li>
+              <li className="flex items-center gap-1.5"><span className="text-gray-400 cursor-not-allowed">Unisex Basics</span> <span className="text-[8px] bg-cream-200 text-gray-500 px-1 py-0.5 rounded-sm normal-case tracking-normal font-bold">Soon</span></li>
             </ul>
           </div>
 

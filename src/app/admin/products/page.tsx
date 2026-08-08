@@ -174,7 +174,7 @@ function ProductModal({
           </div>
 
           {/* Pricing */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Base Price ($)">
               <input className={inputCls} type="number" min="0" step="0.01" value={form.basePrice} onChange={(e) => set("basePrice", e.target.value)} placeholder="32.00" />
             </Field>
@@ -184,7 +184,7 @@ function ProductModal({
           </div>
 
           {/* Category & Collection */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Category">
               <div className="relative">
                 <select className={selectCls} value={form.category} onChange={(e) => set("category", e.target.value)}>
@@ -376,16 +376,16 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 sm:p-8 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Products</h1>
           <p className="text-sm text-white/40 mt-1">{products.length} items in catalog</p>
         </div>
         <button
           onClick={() => setModalProduct(null)}
-          className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white rounded-xl transition-all shadow-lg shadow-violet-500/20"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white rounded-xl transition-all shadow-lg shadow-violet-500/20 self-start sm:self-auto w-full sm:w-auto"
         >
           <Plus size={15} />
           Add Product
@@ -417,15 +417,16 @@ export default function AdminProductsPage() {
             </p>
           </div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/5">
-                {["Product", "Category", "Price", "Stock", "Rating", "Actions"].map((h) => (
-                  <th key={h} className="px-5 py-3.5 text-left text-[10px] font-bold text-white/30 uppercase tracking-widest">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.04]">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[600px] sm:min-w-0">
+              <thead>
+                <tr className="border-b border-white/5">
+                  {["Product", "Category", "Price", "Stock", "Rating", "Actions"].map((h) => (
+                    <th key={h} className="px-5 py-3.5 text-left text-[10px] font-bold text-white/30 uppercase tracking-widest">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.04]">
               {filtered.map((p) => {
                 const totalStock = p.sizes.reduce((sum, s) => sum + s.stockCount, 0);
                 return (
@@ -482,7 +483,7 @@ export default function AdminProductsPage() {
                     </td>
                     {/* Actions */}
                     <td className="px-5 py-4">
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => setModalProduct(p)}
                           className="w-8 h-8 rounded-lg bg-violet-500/10 hover:bg-violet-500/20 text-violet-400 flex items-center justify-center transition-all"
@@ -503,6 +504,7 @@ export default function AdminProductsPage() {
               })}
             </tbody>
           </table>
+        </div>
         )}
       </div>
 

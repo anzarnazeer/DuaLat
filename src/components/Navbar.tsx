@@ -117,16 +117,15 @@ export default function Navbar() {
             >
               Shop All
             </button>
-            <button
-              onClick={() => selectCategoryAndNavigate('boys')}
-              className={`h-20 flex items-center px-1 transition-colors hover:text-primary-500 border-b-4 cursor-pointer ${
+            <div
+              className={`h-20 flex items-center px-1 transition-colors border-b-4 cursor-not-allowed opacity-60 ${
                 selectedCategory === 'boys' 
                   ? 'text-primary-500 border-primary-500 font-extrabold' 
                   : 'text-charcoal border-transparent'
               }`}
             >
-              Boys
-            </button>
+              <span className="flex items-center gap-1.5">Boys <span className="text-[7px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded-full font-bold uppercase tracking-widest leading-none mt-0.5">Soon</span></span>
+            </div>
             <button
               onClick={() => selectCategoryAndNavigate('girls')}
               className={`h-20 flex items-center px-1 transition-colors hover:text-primary-500 border-b-4 cursor-pointer ${
@@ -137,16 +136,15 @@ export default function Navbar() {
             >
               Girls
             </button>
-            <button
-              onClick={() => selectCategoryAndNavigate('unisex')}
-              className={`h-20 flex items-center px-1 transition-colors hover:text-primary-500 border-b-4 cursor-pointer ${
+            <div
+              className={`h-20 flex items-center px-1 transition-colors border-b-4 cursor-not-allowed opacity-60 ${
                 selectedCategory === 'unisex' 
                   ? 'text-primary-500 border-primary-500 font-extrabold' 
                   : 'text-charcoal border-transparent'
               }`}
             >
-              Unisex
-            </button>
+              <span className="flex items-center gap-1.5">Unisex <span className="text-[7px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded-full font-bold uppercase tracking-widest leading-none mt-0.5">Soon</span></span>
+            </div>
           </nav>
 
           {/* Search Bar - Autocomplete */}
@@ -286,24 +284,24 @@ export default function Navbar() {
             >
               Shop All
             </button>
-            <button
-              onClick={() => selectCategoryAndNavigate('boys')}
-              className="w-full text-left py-2.5 px-3 hover:bg-cream-200 rounded font-bold text-xs uppercase tracking-wider text-charcoal cursor-pointer"
+            <div
+              className="w-full flex justify-between items-center text-left py-2.5 px-3 rounded font-bold text-xs uppercase tracking-wider text-gray-400 cursor-not-allowed bg-cream-50"
             >
-              Boys Wear
-            </button>
+              <span>Boys Wear</span>
+              <span className="text-[9px] bg-cream-200 text-gray-500 px-1.5 py-0.5 rounded-sm normal-case">Coming Soon</span>
+            </div>
             <button
               onClick={() => selectCategoryAndNavigate('girls')}
               className="w-full text-left py-2.5 px-3 hover:bg-cream-200 rounded font-bold text-xs uppercase tracking-wider text-charcoal cursor-pointer"
             >
               Girls Wear
             </button>
-            <button
-              onClick={() => selectCategoryAndNavigate('unisex')}
-              className="w-full text-left py-2.5 px-3 hover:bg-cream-200 rounded font-bold text-xs uppercase tracking-wider text-charcoal cursor-pointer"
+            <div
+              className="w-full flex justify-between items-center text-left py-2.5 px-3 rounded font-bold text-xs uppercase tracking-wider text-gray-400 cursor-not-allowed bg-cream-50"
             >
-              Unisex Wear
-            </button>
+              <span>Unisex Wear</span>
+              <span className="text-[9px] bg-cream-200 text-gray-500 px-1.5 py-0.5 rounded-sm normal-case">Coming Soon</span>
+            </div>
           </nav>
         </div>
       )}

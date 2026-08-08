@@ -35,7 +35,7 @@ export default function AdminReviewsPage() {
   };
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 sm:p-8 space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Reviews</h1>
         <p className="text-sm text-white/40 mt-1">{reviews.length} customer reviews</p>
@@ -74,7 +74,7 @@ export default function AdminReviewsPage() {
                 <button
                   onClick={() => handleDelete(r.id)}
                   disabled={deletingId === r.id}
-                  className="opacity-0 group-hover:opacity-100 w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center transition-all flex-shrink-0"
+                  className="lg:opacity-0 lg:group-hover:opacity-100 w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center transition-all flex-shrink-0"
                 >
                   {deletingId === r.id ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
                 </button>

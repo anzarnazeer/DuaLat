@@ -216,19 +216,21 @@ export default function ShopPage() {
             <h3 className="text-[10px] font-extrabold text-[#282c3f] uppercase tracking-wider">Gender</h3>
             <div className="space-y-2">
               {[
-                { label: 'Boys Wear', value: 'boys' },
-                { label: 'Girls Wear', value: 'girls' },
-                { label: 'Unisex Basics', value: 'unisex' }
+                { label: 'Boys Wear', value: 'boys', comingSoon: true },
+                { label: 'Girls Wear', value: 'girls', comingSoon: false },
+                { label: 'Unisex Basics', value: 'unisex', comingSoon: true }
               ].map((item) => (
-                <label key={item.value} className="flex items-center gap-2.5 text-xs text-[#282c3f] font-semibold cursor-pointer group">
+                <label key={item.value} className={`flex items-center gap-2.5 text-xs font-semibold ${item.comingSoon ? 'text-gray-400 cursor-not-allowed' : 'text-[#282c3f] cursor-pointer group'}`}>
                   <input
                     type="radio"
                     name="category-gender"
                     checked={selectedCategory === item.value}
-                    onChange={() => setCategoryFilter(selectedCategory === item.value ? null : (item.value as any))}
-                    className="accent-primary-500 h-3.5 w-3.5 border-cream-300 cursor-pointer"
+                    onChange={() => { if (!item.comingSoon) setCategoryFilter(selectedCategory === item.value ? null : (item.value as any)) }}
+                    disabled={item.comingSoon}
+                    className={`accent-primary-500 h-3.5 w-3.5 border-cream-300 ${item.comingSoon ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                   />
-                  <span className="group-hover:text-primary-500 transition-colors">{item.label}</span>
+                  <span className={`${!item.comingSoon && 'group-hover:text-primary-500 transition-colors'}`}>{item.label}</span>
+                  {item.comingSoon && <span className="text-[8px] bg-cream-200 text-gray-500 px-1 py-0.5 rounded-sm ml-auto">Coming Soon</span>}
                 </label>
               ))}
             </div>
@@ -393,25 +395,28 @@ export default function ShopPage() {
             <div className="space-y-6 flex-1 pb-20">
               {/* Category */}
               <div className="space-y-3">
-                <h3 className="text-[10px] font-extrabold text-[#282c3f] uppercase tracking-wider">Gender</h3>
-                <div className="space-y-2">
-                  {[
-                    { label: 'Boys Wear', value: 'boys' },
-                    { label: 'Girls Wear', value: 'girls' },
-                    { label: 'Unisex Basics', value: 'unisex' }
-                  ].map((item) => (
-                    <label key={item.value} className="flex items-center gap-2.5 text-xs text-[#282c3f] font-semibold cursor-pointer">
-                      <input
-                        type="radio"
-                        checked={selectedCategory === item.value}
-                        onChange={() => setCategoryFilter(selectedCategory === item.value ? null : (item.value as any))}
-                        className="accent-primary-500 h-3.5 w-3.5 border-cream-300 cursor-pointer"
-                      />
-                      <span>{item.label}</span>
-                    </label>
-                  ))}
+                  <h3 className="text-[10px] font-extrabold text-[#282c3f] uppercase tracking-wider">Gender</h3>
+                  <div className="space-y-2">
+                    {[
+                      { label: 'Boys Wear', value: 'boys', comingSoon: true },
+                      { label: 'Girls Wear', value: 'girls', comingSoon: false },
+                      { label: 'Unisex Basics', value: 'unisex', comingSoon: true }
+                    ].map((item) => (
+                      <label key={item.value} className={`flex items-center gap-2.5 text-xs font-semibold ${item.comingSoon ? 'text-gray-400 cursor-not-allowed' : 'text-[#282c3f] cursor-pointer group'}`}>
+                        <input
+                          type="radio"
+                          name="mobile-category-gender"
+                          checked={selectedCategory === item.value}
+                          onChange={() => { if (!item.comingSoon) setCategoryFilter(selectedCategory === item.value ? null : (item.value as any)) }}
+                          disabled={item.comingSoon}
+                          className={`accent-primary-500 h-4 w-4 border-cream-300 ${item.comingSoon ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                        />
+                        <span className={`${!item.comingSoon && 'group-hover:text-primary-500 transition-colors'}`}>{item.label}</span>
+                        {item.comingSoon && <span className="text-[8px] bg-cream-200 text-gray-500 px-1 py-0.5 rounded-sm ml-auto">Coming Soon</span>}
+                      </label>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
               {/* Sizes */}
               <div className="space-y-3 border-t border-cream-300 pt-5">

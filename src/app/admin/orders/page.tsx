@@ -202,16 +202,16 @@ export default function AdminOrdersPage() {
   });
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 sm:p-8 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Orders</h1>
           <p className="text-sm text-white/40 mt-1">{orders.length} total orders</p>
         </div>
         <button
           onClick={fetchOrders}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 transition-all self-start sm:self-auto w-full sm:w-auto"
         >
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
           Refresh
@@ -258,20 +258,22 @@ export default function AdminOrdersPage() {
             </p>
           </div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/5">
-                {["Customer", "Order ID", "Location", "Total", "Status", "Date", ""].map((h) => (
-                  <th key={h} className="px-5 py-3.5 text-left text-[10px] font-bold text-white/30 uppercase tracking-widest">{h}</th>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[700px] sm:min-w-0">
+              <thead>
+                <tr className="border-b border-white/5">
+                  {["Customer", "Order ID", "Location", "Total", "Status", "Date", ""].map((h) => (
+                    <th key={h} className="px-5 py-3.5 text-left text-[10px] font-bold text-white/30 uppercase tracking-widest">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.04]">
+                {filtered.map((order) => (
+                  <OrderRow key={order.id} order={order} onStatusChange={handleStatusChange} />
                 ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.04]">
-              {filtered.map((order) => (
-                <OrderRow key={order.id} order={order} onStatusChange={handleStatusChange} />
-              ))}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

@@ -29,23 +29,22 @@ export default function CheckoutPage() {
     addressLine1: '',
     addressLine2: '',
     city: '',
-    state: '',
+    state: 'Kerala',
     zipCode: '',
-    country: 'United States'
+    country: 'India'
   });
 
-
-  // Calculate pricing
-  const freeShippingThreshold = 50;
+  // Calculate pricing (All MRP inclusive of taxes)
+  const freeShippingThreshold = 999;
   const subtotal = cartTotal;
   const isFreeShippingEligible = subtotal >= freeShippingThreshold;
   
+  // Standard delivery: ₹49 (or FREE above ₹999), Express: ₹99
   const shippingCost = isFreeShippingEligible 
-    ? (shippingMethod === 'express' ? 5.00 : 0) 
-    : (shippingMethod === 'express' ? 9.99 : 4.99);
+    ? (shippingMethod === 'express' ? 49 : 0) 
+    : (shippingMethod === 'express' ? 99 : 49);
 
-  const estimatedTax = subtotal * 0.08; // 8% tax
-  const totalCost = subtotal + shippingCost + estimatedTax;
+  const totalCost = subtotal + shippingCost;
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAddress({ ...address, [e.target.name]: e.target.value });
@@ -118,7 +117,7 @@ export default function CheckoutPage() {
       setOrderNumber(data.orderId); // Real order ID from the database
       
       const message = `Hello DuaLat!\n\nI have placed an order.\n*Order ID:* ${data.orderId}\n*Name:* ${address.fullName}\n*Total Amount:* ₹${totalCost.toFixed(2)}\n\nI can track my order here: ${window.location.origin}/track?id=${data.orderId}\n\nPlease let me know the payment details.`;
-      window.location.href = `https://wa.me/918848422023?text=${encodeURIComponent(message)}`;
+      window.location.href = `https://wa.me/918848722023?text=${encodeURIComponent(message)}`;
     } catch (err) {
       console.error('Checkout error:', err);
       alert('Network error. Please check your connection and try again.');
@@ -222,7 +221,7 @@ export default function CheckoutPage() {
           <div className="pt-4 border-t border-cream-100 flex flex-col gap-3">
             <p className="text-xs text-gray-400">If you are not redirected automatically within 3 seconds, please click the button below.</p>
             <a 
-              href={`https://wa.me/918848422023?text=${encodeURIComponent(`Hello DuaLat!\n\nI have placed an order.\n*Order ID:* ${orderNumber}\n*Name:* ${address.fullName}\n*Total Amount:* ₹${totalCost.toFixed(2)}\n\nI can track my order here: ${window.location.origin}/track?id=${orderNumber}\n\nPlease let me know the payment details.`)}`}
+              href={`https://wa.me/918848722023?text=${encodeURIComponent(`Hello DuaLat!\n\nI have placed an order.\n*Order ID:* ${orderNumber}\n*Name:* ${address.fullName}\n*Total Amount:* ₹${totalCost.toFixed(2)}\n\nI can track my order here: ${window.location.origin}/track?id=${orderNumber}\n\nPlease let me know the payment details.`)}`}
               className="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold px-6 py-4 rounded-2xl shadow-md transition-all w-full"
             >
               <MessageCircle size={20} /> Complete Payment on WhatsApp
@@ -281,31 +280,31 @@ export default function CheckoutPage() {
                         name="phone"
                         value={address.phone}
                         onChange={handleAddressChange}
-                        placeholder="(555) 123-4567"
+                        placeholder="+91 98765 43210"
                         required
                         className="w-full rounded-xl border border-cream-200 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 placeholder-gray-300"
                       />
                     </div>
                     <div className="space-y-1 sm:col-span-2">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase">Street Address *</label>
+                      <label className="text-[11px] font-bold text-gray-500 uppercase">House / Flat / Street Address *</label>
                       <input
                         type="text"
                         name="addressLine1"
                         value={address.addressLine1}
                         onChange={handleAddressChange}
-                        placeholder="123 Cozy Lane"
+                        placeholder="Flat 3B, Sunshine Apartments, MG Road"
                         required
                         className="w-full rounded-xl border border-cream-200 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 placeholder-gray-300"
                       />
                     </div>
                     <div className="space-y-1 sm:col-span-2">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase">Apt, Suite, Unit (Optional)</label>
+                      <label className="text-[11px] font-bold text-gray-500 uppercase">Landmark (Optional)</label>
                       <input
                         type="text"
                         name="addressLine2"
                         value={address.addressLine2}
                         onChange={handleAddressChange}
-                        placeholder="Apt 4B"
+                        placeholder="Near Metro Station"
                         className="w-full rounded-xl border border-cream-200 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 placeholder-gray-300"
                       />
                     </div>
@@ -316,31 +315,31 @@ export default function CheckoutPage() {
                         name="city"
                         value={address.city}
                         onChange={handleAddressChange}
-                        placeholder="San Francisco"
+                        placeholder="Kochi"
                         required
                         className="w-full rounded-xl border border-cream-200 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 placeholder-gray-300"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase">State / Region *</label>
+                      <label className="text-[11px] font-bold text-gray-500 uppercase">State *</label>
                       <input
                         type="text"
                         name="state"
                         value={address.state}
                         onChange={handleAddressChange}
-                        placeholder="CA"
+                        placeholder="Kerala"
                         required
                         className="w-full rounded-xl border border-cream-200 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 placeholder-gray-300"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-gray-500 uppercase">Zip Code *</label>
+                      <label className="text-[11px] font-bold text-gray-500 uppercase">PIN Code *</label>
                       <input
                         type="text"
                         name="zipCode"
                         value={address.zipCode}
                         onChange={handleAddressChange}
-                        placeholder="94107"
+                        placeholder="682001"
                         required
                         className="w-full rounded-xl border border-cream-200 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 placeholder-gray-300"
                       />
@@ -381,12 +380,12 @@ export default function CheckoutPage() {
                           className="accent-secondary-500 h-4 w-4"
                         />
                         <div>
-                          <p className="text-sm font-bold text-charcoal">Standard Shipping</p>
-                          <p className="text-xs text-gray-400">Arrives in 5-7 business days</p>
+                          <p className="text-sm font-bold text-charcoal">Standard Pan-India Delivery</p>
+                          <p className="text-xs text-gray-400">Arrives in 4–7 business days</p>
                         </div>
                       </div>
                       <span className="text-sm font-black text-charcoal">
-                        {isFreeShippingEligible ? 'FREE' : '₹4.99'}
+                        {isFreeShippingEligible ? 'FREE' : '₹49'}
                       </span>
                     </label>
 
@@ -405,12 +404,12 @@ export default function CheckoutPage() {
                           className="accent-secondary-500 h-4 w-4"
                         />
                         <div>
-                          <p className="text-sm font-bold text-charcoal">Express Shipping</p>
-                          <p className="text-xs text-gray-400">Arrives in 2-3 business days</p>
+                          <p className="text-sm font-bold text-charcoal">Express Priority Delivery</p>
+                          <p className="text-xs text-gray-400">Arrives in 2–3 business days</p>
                         </div>
                       </div>
                       <span className="text-sm font-black text-charcoal">
-                        {isFreeShippingEligible ? '₹5.00' : '₹9.99'}
+                        {isFreeShippingEligible ? '₹49' : '₹99'}
                       </span>
                     </label>
                   </div>
@@ -517,33 +516,37 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping ({shippingMethod === 'express' ? 'Express' : 'Standard'})</span>
-                  <span className={shippingCost === 0 ? 'text-secondary-600 font-bold' : 'text-charcoal font-bold'}>
+                  <span className={shippingCost === 0 ? 'text-[#719373] font-bold' : 'text-charcoal font-bold'}>
                     {shippingCost === 0 ? 'FREE' : `₹${shippingCost.toFixed(2)}`}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Estimated Tax (8%)</span>
-                  <span className="text-charcoal font-bold">₹{estimatedTax.toFixed(2)}</span>
+                <div className="flex justify-between text-[11px] text-[#8c827a]">
+                  <span>Taxes</span>
+                  <span>Included in MRP</span>
                 </div>
                 <div className="border-t border-cream-100 pt-3 flex justify-between items-center text-sm">
-                  <span className="text-charcoal font-black">Grand Total</span>
-                  <span className="text-lg font-black text-primary-600">₹{totalCost.toFixed(2)}</span>
+                  <span className="text-charcoal font-black">Total Payable</span>
+                  <span className="text-lg font-black text-[#b85d68]">₹{totalCost.toFixed(2)}</span>
                 </div>
               </div>
 
             </div>
 
-            {/* Parent reassurance block */}
-            <div className="bg-cream-50 p-5 rounded-3xl border border-cream-200/50 space-y-3">
-              <h4 className="font-nunito text-xs font-bold text-charcoal uppercase tracking-wider">Parent Guarantees</h4>
-              <ul className="space-y-2 text-[10px] text-gray-400 leading-relaxed font-medium">
+            {/* Reassurance block */}
+            <div className="bg-[#faf8f5] p-5 rounded-3xl border border-[#e6e1d7] space-y-3">
+              <h4 className="font-serif text-xs font-bold text-charcoal uppercase tracking-wider">Dualat Promise</h4>
+              <ul className="space-y-2 text-[11px] text-[#6b6661] leading-relaxed">
                 <li className="flex items-start gap-2">
-                  <span className="text-secondary-500">✓</span>
-                  <span><strong>Spill & Play Guarantee:</strong> Return any item within 30 days even if worn or stained.</span>
+                  <span className="text-[#719373] font-bold">✓</span>
+                  <span><strong>Pan-India Delivery:</strong> Tracked shipping with updates via SMS and WhatsApp.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-secondary-500">✓</span>
-                  <span><strong>Free Exchanges:</strong> Did baby hit a growth spurt? Swap sizing instantly for free.</span>
+                  <span className="text-[#719373] font-bold">✓</span>
+                  <span><strong>Mother-Led Sizing Assistance:</strong> Need a size swap? Connect directly on WhatsApp for prompt support.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#719373] font-bold">✓</span>
+                  <span><strong>Thoughtfully Curated:</strong> Quality-checked fabrics inspected for little girls' comfort.</span>
                 </li>
               </ul>
             </div>

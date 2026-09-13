@@ -5,8 +5,14 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/admin', '/api/admin', '/api/auth'],
+      disallow: [
+        '/admin',
+        '/admin/*',
+        '/api/*',
+        '/checkout',
+        '/checkout/*',
+      ],
     },
-    sitemap: 'https://dua-lat.vercel.app/sitemap.xml',
+    sitemap: 'https://www.dualat.in/sitemap.xml',
   };
 }

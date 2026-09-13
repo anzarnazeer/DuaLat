@@ -1,5 +1,6 @@
 import { CartProvider } from "@/context/CartContext";
 import { ShopProvider } from "@/context/ShopContext";
+import AnnouncementBar from "@/components/AnnouncementBar";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MiniCart from "@/components/MiniCart";
@@ -13,6 +14,9 @@ export default function StorefrontLayout({
   return (
     <ShopProvider>
       <CartProvider>
+        {/* Announcement Bar */}
+        <AnnouncementBar />
+
         {/* Top Navigation */}
         <Navbar />
         

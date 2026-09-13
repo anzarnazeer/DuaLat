@@ -1,59 +1,65 @@
 "use client";
 
 import React from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
-import { Home, ShoppingBag, Grid, CreditCard } from 'lucide-react';
+import { Home, Grid, Heart, ShoppingBag, BookOpen } from 'lucide-react';
 
 export default function StickyMobileBar() {
-  const router = useRouter();
   const pathname = usePathname();
   const { cartCount, setCartOpen } = useCart();
 
-  return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-35 bg-white/80 backdrop-blur-md border-t border-cream-200 py-2 pb-safe-bottom shadow-lg px-6 flex justify-between items-center text-gray-500">
-      
-      <button 
-        onClick={() => router.push('/')}
-        className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${
-          pathname === '/' ? 'text-primary-500 font-bold' : 'hover:text-primary-400'
-        }`}
-      >
-        <Home size={20} />
-        <span className="text-[10px]">Home</span>
-      </button>
+  // Hide sticky mobile bar on checkout page to avoid distractions
+  if (pathname === '/checkout') return null;
 
-      <button 
-        onClick={() => router.push('/shop')}
-        className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${
-          pathname === '/shop' ? 'text-primary-500 font-bold' : 'hover:text-primary-400'
+  return (
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-35 bg-white/95 backdrop-blur-md border-t border-[#e6e1d7] py-2 px-5 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))] shadow-lg flex justify-around items-center text-[#6b6661]">
+      
+      <Link 
+        href="/"
+        className={`flex flex-col items-center gap-1 transition-colors ${
+          pathname === '/' ? 'text-[#b85d68] font-bold' : 'hover:text-[#242220]'
         }`}
       >
-        <Grid size={20} />
-        <span className="text-[10px]">Shop</span>
-      </button>
+        <Home size={18} />
+        <span className="text-[9px] uppercase tracking-wider font-semibold">Home</span>
+      </Link>
+
+      <Link 
+        href="/girls"
+        className={`flex flex-col items-center gap-1 transition-colors ${
+          pathname.startsWith('/girls') || pathname === '/shop' ? 'text-[#b85d68] font-bold' : 'hover:text-[#242220]'
+        }`}
+      >
+        <Grid size={18} />
+        <span className="text-[9px] uppercase tracking-wider font-semibold">Shop</span>
+      </Link>
+
+      <Link 
+        href="/journal"
+        className={`flex flex-col items-center gap-1 transition-colors ${
+          pathname.startsWith('/journal') ? 'text-[#b85d68] font-bold' : 'hover:text-[#242220]'
+        }`}
+      >
+        <BookOpen size={18} />
+        <span className="text-[9px] uppercase tracking-wider font-semibold">Journal</span>
+      </Link>
 
       <button 
         onClick={() => setCartOpen(true)}
-        className="flex flex-col items-center gap-1 relative cursor-pointer hover:text-primary-400"
+        className="flex flex-col items-center gap-1 relative cursor-pointer hover:text-[#242220]"
+        aria-label="View shopping bag"
       >
-        <ShoppingBag size={20} />
-        {cartCount > 0 && (
-          <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent-500 text-[8px] font-bold text-white">
-            {cartCount}
-          </span>
-        )}
-        <span className="text-[10px]">Cart</span>
-      </button>
-
-      <button 
-        onClick={() => router.push('/checkout')}
-        className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${
-          pathname === '/checkout' ? 'text-primary-500 font-bold' : 'hover:text-primary-400'
-        }`}
-      >
-        <CreditCard size={20} />
-        <span className="text-[10px]">Checkout</span>
+        <div className="relative">
+          <ShoppingBag size={18} />
+          {cartCount > 0 && (
+            <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#b85d68] text-[8px] font-bold text-white">
+              {cartCount}
+            </span>
+          )}
+        </div>
+        <span className="text-[9px] uppercase tracking-wider font-semibold">Bag</span>
       </button>
 
     </div>

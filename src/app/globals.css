@@ -1,56 +1,56 @@
 @import "tailwindcss";
 
 @theme {
-  /* Myntra-Inspired Premium Fashion Palette */
-  --color-primary-50: #fff1f4;
-  --color-primary-100: #ffe3e8;
-  --color-primary-200: #ffccd5;
-  --color-primary-300: #ffa3b3;
-  --color-primary-400: #ff6b85;
-  --color-primary-500: #ff3f6c; /* Myntra Brand Pink/Red */
-  --color-primary-600: #e0224f;
-  --color-primary-700: #bd123b;
+  /* DUALAT Soft Boutique Palette: Warm, Mother-Led, Minimal & Elegant */
+  --color-primary-50: #fdf8f7;  /* Delicate blush */
+  --color-primary-100: #faeeec; /* Warm rose mist */
+  --color-primary-200: #f4dcda; /* Soft petal */
+  --color-primary-300: #e8bebb; /* Pale dusty rose */
+  --color-primary-400: #d69490; /* Muted rose */
+  --color-primary-500: #b85d68; /* DUALAT Signature Warm Rose */
+  --color-primary-600: #9e4652; /* Deep terracotta rose */
+  --color-primary-700: #82343e; /* Rich berry rose */
 
-  --color-secondary-50: #f0fbf7;
-  --color-secondary-100: #dcf7ec;
-  --color-secondary-200: #b3eed3;
-  --color-secondary-300: #7eebb5;
-  --color-secondary-400: #42d892;
-  --color-secondary-500: #03a685; /* Trust Teal Green */
-  --color-secondary-600: #018267;
-  --color-secondary-700: #016250;
+  --color-secondary-50: #f8faf8;
+  --color-secondary-100: #eef3ee;
+  --color-secondary-200: #dde6dd;
+  --color-secondary-300: #c2d2c3;
+  --color-secondary-400: #9cb59d;
+  --color-secondary-500: #719373; /* Subtle Sage Green */
+  --color-secondary-600: #58765a;
+  --color-secondary-700: #465d48;
 
-  --color-accent-50: #fff7f4;
-  --color-accent-100: #ffede5;
-  --color-accent-200: #ffd7c7;
-  --color-accent-300: #ffb99e;
-  --color-accent-400: #ff905a; /* Discount/Highlight Orange */
-  --color-accent-500: #ff7332;
-  --color-accent-600: #e65112;
-  --color-accent-700: #c23c05;
+  --color-accent-50: #faf7f2;
+  --color-accent-100: #f4ede3;
+  --color-accent-200: #e8d9c5;
+  --color-accent-300: #d8bea0;
+  --color-accent-400: #c6a279;
+  --color-accent-500: #af8558; /* Warm Muted Ochre / Gold */
+  --color-accent-600: #936a43;
+  --color-accent-700: #765335;
 
-  --color-cream-50: #fcfcfc;
-  --color-cream-100: #ffffff; /* Crisp White Background */
-  --color-cream-200: #f5f5f6; /* Myntra light grey background */
-  --color-cream-300: #eaeaec; /* Myntra border grey */
+  --color-cream-50: #faf8f5;  /* Warm Linen Background */
+  --color-cream-100: #ffffff; /* Crisp Pure White */
+  --color-cream-200: #f3efe9; /* Soft Stone / Warm Neutral */
+  --color-cream-300: #e6e1d7; /* Elegant Subtle Border */
 
-  --color-charcoal: #282c3f; /* Deep Charcoal for crisp modern text */
-  --color-baby-blue: #c4dcf2;
-  --color-baby-pink: #f7d5de;
-  --color-baby-yellow: #fcebc2;
+  --color-charcoal: #242220;  /* Deep Warm Espresso Charcoal */
+  --color-baby-blue: #d7e4ec;
+  --color-baby-pink: #f7e2e5;
+  --color-baby-yellow: #f7ecd2;
 
   /* Custom Typography Mapping */
   --font-quicksand: var(--font-assistant), sans-serif;
   --font-nunito: var(--font-assistant), sans-serif;
 
-  /* Extra Friendly Shapes */
-  --radius-4xl: 0.75rem; /* Make elements crisp and clean, less bubbly */
-  --radius-5xl: 1rem;
+  /* Crisp Elegant Boutique Shapes */
+  --radius-4xl: 0.5rem;
+  --radius-5xl: 0.75rem;
 }
 
 :root {
-  --background: #ffffff; /* Pure Crisp White */
-  --foreground: #282c3f; /* Charcoal */
+  --background: #faf8f5; /* Warm linen soft background */
+  --foreground: #242220; /* Deep warm espresso charcoal */
 }
 
 body {
@@ -63,6 +63,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-nunito);
   font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 /* Custom Scrollbar */

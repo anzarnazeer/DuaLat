@@ -20,6 +20,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
   try {
     // CONCEPT: `request.nextUrl.searchParams` is a URLSearchParams object.
@@ -53,7 +56,11 @@ export async function GET(request: NextRequest) {
     // - Content-Type: application/json header set automatically
     // - The data serialized to JSON
     // - HTTP 200 status by default
-    return NextResponse.json(products);
+    return NextResponse.json(products, {
+      headers: {
+        "Cache-Control": "no-store, max-age=0",
+      },
+    });
 
   } catch (error) {
     // CONCEPT: Always wrap database calls in try/catch.

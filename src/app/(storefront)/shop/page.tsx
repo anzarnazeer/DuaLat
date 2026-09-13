@@ -21,23 +21,37 @@ export default function ShopPage() {
   } = useShop();
 
   // Local filter states
-  const [maxPrice, setMaxPrice] = useState<number>(60);
+  const [maxPrice, setMaxPrice] = useState<number>(3000);
   const [selectedMaterial, setSelectedMaterial] = useState<string | null>(null);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState<'recommended' | 'price-asc' | 'price-desc' | 'rating'>('recommended');
 
-  const materials = ['Organic Cotton', 'Muslin', 'Cotton Knit', 'Fleece'];
+  const materials = ['Organic Cotton', 'Muslin', 'Cotton Knit', 'Fleece', 'Textured Cotton', 'Comfort Fit', 'Breathable'];
 
   // CONCEPT: Fetch all products from the backend API when the page loads.
   // The empty dependency array [] means this runs once on mount, like componentDidMount.
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Dynamically compute the highest price across products, defaulting to at least 2000
+  const highestPrice = useMemo(() => {
+    if (!allProducts.length) return 2000;
+    const max = Math.max(...allProducts.map((p) => p.salePrice ?? p.basePrice));
+    return Math.max(2000, Math.ceil(max / 100) * 100);
+  }, [allProducts]);
+
   useEffect(() => {
-    fetch('/api/products')
+    fetch('/api/products', { cache: 'no-store' })
       .then((res) => res.json())
       .then((data: Product[]) => {
-        setAllProducts(data);
+        if (Array.isArray(data)) {
+          setAllProducts(data);
+          if (data.length > 0) {
+            const max = Math.max(...data.map((p) => p.salePrice ?? p.basePrice));
+            const ceiling = Math.max(2000, Math.ceil(max / 100) * 100);
+            setMaxPrice(ceiling);
+          }
+        }
         setIsLoading(false);
       })
       .catch((err) => {
@@ -61,7 +75,7 @@ export default function ShopPage() {
 
       // 3. Age/Size Filter
       if (selectedAge) {
-        const hasSize = product.sizes.some(
+        const hasSize = product.sizes?.some(
           (s) => s.size === selectedAge && s.stockCount > 0
         );
         if (!hasSize) return false;
@@ -70,9 +84,9 @@ export default function ShopPage() {
       // 4. Search Query Filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        const matchesName = product.name.toLowerCase().includes(query);
-        const matchesDesc = product.description.toLowerCase().includes(query);
-        const matchesTags = product.fabricTags.some(t => t.toLowerCase().includes(query));
+        const matchesName = product.name?.toLowerCase().includes(query);
+        const matchesDesc = product.description?.toLowerCase().includes(query);
+        const matchesTags = product.fabricTags?.some(t => t && t.toLowerCase().includes(query));
         if (!matchesName && !matchesDesc && !matchesTags) {
           return false;
         }
@@ -86,15 +100,15 @@ export default function ShopPage() {
 
       // 6. Material Filter
       if (selectedMaterial) {
-        const tagMatch = product.fabricTags.some(t => 
-          t.toLowerCase().includes(selectedMaterial.toLowerCase())
+        const tagMatch = product.fabricTags?.some(t => 
+          t && t.toLowerCase().includes(selectedMaterial.toLowerCase())
         );
         if (!tagMatch) return false;
       }
 
       return true;
     });
-  }, [selectedCategory, selectedCollection, selectedAge, searchQuery, maxPrice, selectedMaterial]);
+  }, [allProducts, selectedCategory, selectedCollection, selectedAge, searchQuery, maxPrice, selectedMaterial]);
 
   // Sort products
   const sortedAndFilteredProducts = useMemo(() => {
@@ -115,14 +129,14 @@ export default function ShopPage() {
     if (selectedCategory) count++;
     if (selectedCollection) count++;
     if (searchQuery) count++;
-    if (maxPrice < 60) count++;
+    if (maxPrice < highestPrice) count++;
     if (selectedMaterial) count++;
     return count;
-  }, [selectedAge, selectedCategory, selectedCollection, searchQuery, maxPrice, selectedMaterial]);
+  }, [selectedAge, selectedCategory, selectedCollection, searchQuery, maxPrice, highestPrice, selectedMaterial]);
 
   const resetAllLocalFilters = () => {
     clearAllFilters();
-    setMaxPrice(60);
+    setMaxPrice(highestPrice);
     setSelectedMaterial(null);
   };
 
@@ -264,16 +278,16 @@ export default function ShopPage() {
             </div>
             <input
               type="range"
-              min="20"
-              max="60"
-              step="2"
+              min="100"
+              max={highestPrice}
+              step="50"
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full h-1.5 bg-cream-200 rounded-lg appearance-none cursor-pointer accent-primary-500"
             />
             <div className="flex justify-between text-[8px] text-gray-400 font-bold px-1 uppercase tracking-wide">
-              <span>₹20</span>
-              <span>₹60</span>
+              <span>₹100</span>
+              <span>₹{highestPrice}</span>
             </div>
           </div>
 
@@ -322,9 +336,9 @@ export default function ShopPage() {
         <div className="lg:col-span-3 space-y-6">
           
           {/* Desktop Sort Header */}
-          <div className="hidden lg:flex justify-between items-center border-b border-cream-300 pb-3">
-            <div className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
-              Available sizes are displayed on card hover
+          <div className="hidden lg:flex justify-between items-center border-b border-[#e6e1d7] pb-3">
+            <div className="text-[11px] font-bold text-[#8c8780] uppercase tracking-widest">
+              Available sizes shown on card
             </div>
             
             {/* Sort Selector */}
@@ -332,28 +346,89 @@ export default function ShopPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="appearance-none bg-white border border-cream-300 rounded pl-4 pr-10 py-2 text-xs font-bold text-charcoal focus:outline-none focus:border-primary-500 cursor-pointer"
+                className="appearance-none bg-white border border-[#e6e1d7] rounded-full pl-4 pr-10 py-2 text-xs font-bold text-[#242220] focus:outline-none focus:border-[#b85d68] cursor-pointer"
               >
-                <option value="recommended">Sort by: Recommended</option>
+                <option value="recommended">Sort by: Featured</option>
                 <option value="price-asc">Price: Low to High</option>
                 <option value="price-desc">Price: High to Low</option>
-                <option value="rating">Customer Rating</option>
+                <option value="rating">Top Customer Rated</option>
               </select>
-              <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8c8780] pointer-events-none" />
             </div>
           </div>
 
+          {/* Active Filter Removable Chips */}
+          {activeFilterCount > 0 && (
+            <div className="flex flex-wrap items-center gap-2 pb-1">
+              <span className="text-[10px] font-bold text-[#8c8780] uppercase tracking-wider">Active Filters:</span>
+              {selectedCategory && (
+                <button
+                  onClick={() => setCategoryFilter(null)}
+                  className="inline-flex items-center gap-1 bg-[#fdf8f7] text-[#b85d68] border border-[#f4dcda] px-2.5 py-1 rounded-full text-[11px] font-semibold hover:bg-[#faeeec] transition-colors"
+                >
+                  Category: {selectedCategory} <X size={11} />
+                </button>
+              )}
+              {selectedAge && (
+                <button
+                  onClick={() => setAgeFilter(null)}
+                  className="inline-flex items-center gap-1 bg-[#fdf8f7] text-[#b85d68] border border-[#f4dcda] px-2.5 py-1 rounded-full text-[11px] font-semibold hover:bg-[#faeeec] transition-colors"
+                >
+                  Age: {selectedAge} <X size={11} />
+                </button>
+              )}
+              {selectedCollection && (
+                <button
+                  onClick={() => setCollectionFilter(null)}
+                  className="inline-flex items-center gap-1 bg-[#fdf8f7] text-[#b85d68] border border-[#f4dcda] px-2.5 py-1 rounded-full text-[11px] font-semibold hover:bg-[#faeeec] transition-colors"
+                >
+                  Collection: {selectedCollection} <X size={11} />
+                </button>
+              )}
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="inline-flex items-center gap-1 bg-[#fdf8f7] text-[#b85d68] border border-[#f4dcda] px-2.5 py-1 rounded-full text-[11px] font-semibold hover:bg-[#faeeec] transition-colors"
+                >
+                  Search: &quot;{searchQuery}&quot; <X size={11} />
+                </button>
+              )}
+              {maxPrice < highestPrice && (
+                <button
+                  onClick={() => setMaxPrice(highestPrice)}
+                  className="inline-flex items-center gap-1 bg-[#fdf8f7] text-[#b85d68] border border-[#f4dcda] px-2.5 py-1 rounded-full text-[11px] font-semibold hover:bg-[#faeeec] transition-colors"
+                >
+                  Max: ₹{maxPrice} <X size={11} />
+                </button>
+              )}
+              {selectedMaterial && (
+                <button
+                  onClick={() => setSelectedMaterial(null)}
+                  className="inline-flex items-center gap-1 bg-[#fdf8f7] text-[#b85d68] border border-[#f4dcda] px-2.5 py-1 rounded-full text-[11px] font-semibold hover:bg-[#faeeec] transition-colors"
+                >
+                  Fabric: {selectedMaterial} <X size={11} />
+                </button>
+              )}
+              <button
+                onClick={resetAllLocalFilters}
+                className="text-xs font-bold text-[#8c8780] hover:text-[#b85d68] underline ml-1 cursor-pointer"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+
           {/* Cards Grid */}
           {sortedAndFilteredProducts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center bg-white border border-cream-300 rounded">
-              <span className="text-5xl mb-4">🔍</span>
-              <h3 className="text-base font-bold text-[#282c3f] uppercase tracking-wider">No matching items found</h3>
-              <p className="text-xs text-gray-400 mt-1 max-w-xs px-6 leading-relaxed font-semibold">
-                Try widening your price range, removing age sizes, or resetting search keywords.
+            <div className="flex flex-col items-center justify-center py-20 text-center bg-white border border-[#e6e1d7] rounded-2xl">
+              <span className="text-4xl mb-3">🌿</span>
+              <h3 className="font-serif text-base font-bold text-[#242220]">No matching outfits found</h3>
+              <p className="text-xs text-[#6b6661] mt-1 max-w-xs px-6 leading-relaxed">
+                Try widening your price range, clearing size filters, or searching for broader terms.
               </p>
               <button
                 onClick={resetAllLocalFilters}
-                className="mt-6 bg-[#282c3f] hover:bg-[#ff3f6c] text-white text-xs font-extrabold px-6 py-3 rounded tracking-wider uppercase transition-colors shadow cursor-pointer"
+                className="mt-5 bg-[#242220] hover:bg-[#b85d68] text-white text-xs font-bold px-6 py-2.5 rounded-full tracking-wider uppercase transition-colors shadow-xs cursor-pointer"
               >
                 Reset All Filters
               </button>
@@ -446,13 +521,17 @@ export default function ShopPage() {
                 </div>
                 <input
                   type="range"
-                  min="20"
-                  max="60"
-                  step="2"
+                  min="100"
+                  max={highestPrice}
+                  step="50"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(Number(e.target.value))}
                   className="w-full h-1.5 bg-cream-200 rounded-lg appearance-none cursor-pointer accent-primary-500"
                 />
+                <div className="flex justify-between text-[8px] text-gray-400 font-bold px-1 uppercase tracking-wide">
+                  <span>₹100</span>
+                  <span>₹{highestPrice}</span>
+                </div>
               </div>
 
               {/* Fabric */}

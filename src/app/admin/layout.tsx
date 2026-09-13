@@ -11,7 +11,7 @@ import {
   Star,
   BarChart3,
   LogOut,
-  Sparkles,
+  Store,
   ChevronRight,
   Menu,
   X,
@@ -43,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <header className="flex md:hidden items-center justify-between px-5 py-4 bg-[#141418] border-b border-white/5 sticky top-0 z-30">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/30">
-            <Sparkles size={14} className="text-white" />
+            <ShoppingBag size={14} className="text-white" />
           </div>
           <div>
             <div className="font-bold text-sm text-white tracking-tight">DuaLat</div>
@@ -60,7 +60,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* ─── Sidebar ─────────────────────────────────────────── */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#141418] border-r border-white/5 flex flex-col transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#141418] border-r border-white/5 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -68,7 +68,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="p-6 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/30">
-              <Sparkles size={14} className="text-white" />
+              <ShoppingBag size={14} className="text-white" />
             </div>
             <div>
               <div className="font-bold text-sm text-white tracking-tight">DuaLat</div>
@@ -119,7 +119,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/40 hover:text-white/70 hover:bg-white/5 transition-all"
           >
-            <Sparkles size={15} />
+            <Store size={15} />
             Back to Store
           </Link>
           <button

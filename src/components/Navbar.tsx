@@ -1,26 +1,32 @@
 "use client";
+
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useShop } from '@/context/ShopContext';
 import type { Product } from '@/lib/mockData';
-import { Search, ShoppingBag, Menu, X, ChevronDown, Sparkles, User, Heart, Package } from 'lucide-react';
+import {
+  Search,
+  ShoppingBag,
+  User,
+  Heart,
+  Menu,
+  X,
+  ChevronRight
+} from 'lucide-react';
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const { cartCount, setCartOpen } = useCart();
-  const { 
-    selectedCategory, 
-    setCategoryFilter, 
-    searchQuery, 
-    setSearchQuery 
-  } = useShop();
+  const { setCategoryFilter, setSearchQuery } = useShop();
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState('');
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
   // Close suggestions when clicking outside
@@ -30,13 +36,11 @@ export default function Navbar() {
         setShowSuggestions(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // CONCEPT: Debounced API search — we don't want to call the API on every
-  // keystroke (that would be too many requests). We wait 300ms after the user
-  // stops typing before making the request. This is called "debouncing".
+  // Debounced API search
   useEffect(() => {
     if (localSearch.trim().length < 2) {
       setSuggestions([]);
@@ -44,17 +48,17 @@ export default function Navbar() {
       return;
     }
 
-    // Set a timer — if the user types again within 300ms, this gets cancelled
     const timer = setTimeout(() => {
-      fetch(`/api/products`)
+      fetch(`/api/products`, { cache: 'no-store' })
         .then((res) => res.json())
         .then((products: Product[]) => {
+          if (!Array.isArray(products)) return;
           const query = localSearch.toLowerCase();
           const filtered = products
             .filter(
               (p) =>
-                p.name.toLowerCase().includes(query) ||
-                p.description.toLowerCase().includes(query)
+                p.name?.toLowerCase().includes(query) ||
+                p.description?.toLowerCase().includes(query)
             )
             .slice(0, 5);
           setSuggestions(filtered);
@@ -63,7 +67,6 @@ export default function Navbar() {
         .catch(console.error);
     }, 300);
 
-    // Cleanup: cancel the timer if the component re-renders before 300ms
     return () => clearTimeout(timer);
   }, [localSearch]);
 
@@ -72,114 +75,135 @@ export default function Navbar() {
     if (localSearch.trim()) {
       setSearchQuery(localSearch.trim());
       setShowSuggestions(false);
-      router.push('/shop');
+      setIsMobileSearchOpen(false);
+      setIsMobileMenuOpen(false);
+      router.push(`/shop?q=${encodeURIComponent(localSearch.trim())}`);
     }
   };
 
-  const handleSuggestionClick = (productId: string) => {
+  const handleSuggestionClick = (id: string) => {
     setShowSuggestions(false);
-    setLocalSearch('');
-    router.push(`/product/${productId}`);
-  };
-
-  const selectCategoryAndNavigate = (cat: 'boys' | 'girls' | 'unisex' | null) => {
-    setCategoryFilter(cat);
+    setIsMobileSearchOpen(false);
     setIsMobileMenuOpen(false);
-    router.push('/shop');
+    setLocalSearch('');
+    router.push(`/product/${id}`);
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b border-cream-300 shadow-[0_4px_12px_rgba(0,0,0,0.04)] h-20 flex items-center">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex h-20 items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-[#e6e1d7] transition-all">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-18 sm:h-20 items-center justify-between gap-3 sm:gap-6">
           
-          {/* Logo */}
-          <Link href="/" className="flex items-center shrink-0 group select-none">
-            {/* Pure Typographic Motherhood Capsule - No Icon/Image */}
-            <span className="font-assistant text-2xl font-black tracking-tight text-[#282c3f] flex items-center leading-none bg-[#fff1f4] px-4 py-2 border border-primary-100 rounded-full shadow-xs transition-all duration-300 group-hover:scale-[1.02] group-hover:border-primary-200">
-              dua<span className="text-primary-500 font-black">lat</span>
-              <span className="text-[9px] uppercase font-bold tracking-widest text-[#ff3f6c] ml-2.5 bg-white px-2 py-1 rounded-full border border-primary-200 self-center hidden sm:inline-block">
-                Organic Kids
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 text-[#242220] hover:text-[#b85d68] lg:hidden cursor-pointer rounded-lg -ml-1 transition-colors"
+            aria-label="Toggle navigation menu"
+          >
+            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+
+          {/* Boutique Brand Logo */}
+          <Link href="/" className="flex items-center shrink-0 group select-none py-2">
+            <div className="flex flex-col">
+              <span className="font-serif tracking-widest text-2xl sm:text-3xl font-extrabold text-[#242220] group-hover:text-[#b85d68] transition-colors leading-none uppercase">
+                Dualat
               </span>
-            </span>
+              <span className="text-[9px] font-sans font-semibold tracking-[0.25em] text-[#b85d68] uppercase mt-1 leading-none">
+                Little Girls
+              </span>
+            </div>
           </Link>
 
-
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8 text-[12px] font-extrabold tracking-widest uppercase items-center h-full">
-            <button
-              onClick={() => selectCategoryAndNavigate(null)}
-              className={`h-20 flex items-center px-1 transition-colors hover:text-primary-500 border-b-4 cursor-pointer ${
-                selectedCategory === null 
-                  ? 'text-primary-500 border-primary-500 font-extrabold' 
-                  : 'text-charcoal border-transparent'
+          <nav className="hidden lg:flex items-center space-x-7 text-[12px] font-bold tracking-widest uppercase h-full text-[#242220]">
+            <Link
+              href="/girls"
+              className={`py-6 border-b-2 transition-colors hover:text-[#b85d68] ${
+                pathname === '/girls' ? 'text-[#b85d68] border-[#b85d68]' : 'border-transparent'
               }`}
             >
-              Shop All
-            </button>
-            <div
-              className={`h-20 flex items-center px-1 transition-colors border-b-4 cursor-not-allowed opacity-60 ${
-                selectedCategory === 'boys' 
-                  ? 'text-primary-500 border-primary-500 font-extrabold' 
-                  : 'text-charcoal border-transparent'
-              }`}
-            >
-              <span className="flex items-center gap-1.5">Boys <span className="text-[7px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded-full font-bold uppercase tracking-widest leading-none mt-0.5">Soon</span></span>
-            </div>
-            <button
-              onClick={() => selectCategoryAndNavigate('girls')}
-              className={`h-20 flex items-center px-1 transition-colors hover:text-primary-500 border-b-4 cursor-pointer ${
-                selectedCategory === 'girls' 
-                  ? 'text-primary-500 border-primary-500 font-extrabold' 
-                  : 'text-charcoal border-transparent'
-              }`}
+              New Arrivals
+            </Link>
+            <Link
+              href="/girls"
+              className="py-6 border-b-2 border-transparent transition-colors hover:text-[#b85d68]"
             >
               Girls
-            </button>
-            <div
-              className={`h-20 flex items-center px-1 transition-colors border-b-4 cursor-not-allowed opacity-60 ${
-                selectedCategory === 'unisex' 
-                  ? 'text-primary-500 border-primary-500 font-extrabold' 
-                  : 'text-charcoal border-transparent'
+            </Link>
+            <Link
+              href="/girls/dresses"
+              className={`py-6 border-b-2 transition-colors hover:text-[#b85d68] ${
+                pathname.includes('/dresses') ? 'text-[#b85d68] border-[#b85d68]' : 'border-transparent'
               }`}
             >
-              <span className="flex items-center gap-1.5">Unisex <span className="text-[7px] bg-gray-200 text-gray-500 px-1.5 py-0.5 rounded-full font-bold uppercase tracking-widest leading-none mt-0.5">Soon</span></span>
-            </div>
+              Dresses
+            </Link>
+            <Link
+              href="/shop"
+              className={`py-6 border-b-2 transition-colors hover:text-[#b85d68] ${
+                pathname === '/shop' ? 'text-[#b85d68] border-[#b85d68]' : 'border-transparent'
+              }`}
+            >
+              Shop by Age
+            </Link>
+            <Link
+              href="/journal"
+              className={`py-6 border-b-2 transition-colors hover:text-[#b85d68] ${
+                pathname.startsWith('/journal') ? 'text-[#b85d68] border-[#b85d68]' : 'border-transparent'
+              }`}
+            >
+              Journal
+            </Link>
+            <Link
+              href="/about"
+              className={`py-6 border-b-2 transition-colors hover:text-[#b85d68] ${
+                pathname === '/about' ? 'text-[#b85d68] border-[#b85d68]' : 'border-transparent'
+              }`}
+            >
+              About Dualat
+            </Link>
           </nav>
 
-          {/* Search Bar - Autocomplete */}
-          <div ref={searchRef} className="hidden md:relative md:block max-w-xs lg:max-w-md w-full">
+          {/* Desktop Search Bar */}
+          <div ref={searchRef} className="hidden md:block relative max-w-xs lg:max-w-sm w-full">
             <form onSubmit={handleSearchSubmit} className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                <Search size={16} />
+              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6b6661] pointer-events-none">
+                <Search size={15} />
               </div>
               <input
                 type="text"
-                placeholder="Search for soft cotton, rompers, sets..."
+                placeholder="Search cotton dresses, frocks, prints..."
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
                 onFocus={() => localSearch.trim().length >= 2 && setShowSuggestions(true)}
-                className="w-full rounded bg-cream-200 py-2 pl-10 pr-4 text-xs border border-transparent focus:border-cream-300 focus:bg-white focus:outline-none placeholder-[#9496a2] text-charcoal font-medium transition-all"
+                className="w-full rounded-full bg-[#f3efe9] py-2 pl-10 pr-4 text-xs border border-transparent focus:border-[#e6e1d7] focus:bg-white focus:outline-none placeholder-[#8c8780] text-[#242220] transition-all"
               />
             </form>
 
-            {/* Smart Suggestions Dropdown */}
+            {/* Suggestions Dropdown */}
             {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute left-0 right-0 mt-2 rounded-lg border border-cream-300 bg-white p-2 shadow-2xl z-50 max-h-80 overflow-y-auto">
-                <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
-                  <Sparkles size={11} className="text-primary-500" /> Smart Suggestions
+              <div className="absolute left-0 right-0 mt-2 rounded-2xl border border-[#e6e1d7] bg-white p-3 shadow-xl z-50 max-h-80 overflow-y-auto">
+                <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-[#8c8780]">
+                  Suggestions
                 </div>
-                <ul>
+                <ul className="divide-y divide-[#f3efe9] mt-1">
                   {suggestions.map((p) => (
                     <li key={p.id}>
                       <button
                         onClick={() => handleSuggestionClick(p.id)}
-                        className="w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-cream-200 rounded transition-colors cursor-pointer"
+                        className="w-full flex items-center gap-3 p-2 text-left hover:bg-[#faf8f5] rounded-xl transition-colors cursor-pointer"
                       >
-                        <img src={p.images[0]} alt={p.name} className="h-10 w-10 rounded object-cover shrink-0" />
-                        <div>
-                          <p className="text-xs font-bold text-charcoal truncate">{p.name}</p>
-                          <p className="text-[10px] text-gray-400 truncate">{p.fabricTags[0]} • ${p.salePrice ?? p.basePrice}</p>
+                        <img
+                          src={p.images[0] || '/placeholder.png'}
+                          alt={p.name}
+                          className="h-11 w-11 rounded-lg object-cover shrink-0 border border-[#e6e1d7]"
+                        />
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-[#242220] truncate">{p.name}</p>
+                          <p className="text-[11px] font-semibold text-[#b85d68] mt-0.5">
+                            ₹{p.salePrice ?? p.basePrice}
+                          </p>
                         </div>
                       </button>
                     </li>
@@ -189,123 +213,176 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* User Action Badges */}
-          <div className="flex items-center space-x-6 shrink-0 h-full">
-            {/* Profile */}
-            <div className="relative group flex flex-col items-center justify-center h-20 cursor-pointer text-charcoal hover:text-primary-500 transition-colors">
-              <User size={18} className="stroke-[1.8]" />
-              <span className="text-[10px] font-bold mt-1 tracking-wide">Profile</span>
-              
-              {/* Profile Dropdown */}
-              <div className="absolute right-[-10px] top-20 w-64 bg-white border border-cream-300 shadow-2xl rounded-b py-5 px-6 hidden group-hover:block z-50 text-charcoal animate-fade-in">
-                <h4 className="text-xs font-extrabold text-charcoal mb-0.5">Welcome</h4>
-                <p className="text-[10px] text-gray-400 mb-4">To access account and manage orders</p>
-                <button 
-                  onClick={() => router.push('/shop')}
-                  className="w-full border border-primary-500 text-primary-500 font-extrabold text-[11px] py-2.5 rounded hover:bg-primary-50 transition-colors uppercase tracking-wider mb-4 cursor-pointer"
-                >
-                  Login / Signup
-                </button>
-                <div className="border-t border-cream-300 pt-3 space-y-2 text-xs font-semibold text-[#3e4152]">
-                  <Link href="/track" className="block hover:font-bold hover:text-primary-500 transition-colors">Track Order</Link>
-                  <Link href="/shop" className="block hover:font-bold hover:text-primary-500 transition-colors">Wishlist</Link>
-                  <Link href="/shop" className="block hover:font-bold hover:text-primary-500 transition-colors">Gift Cards</Link>
-                  <Link href="/shop" className="block hover:font-bold hover:text-primary-500 transition-colors">Contact Us</Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Track Order */}
-            <Link 
-              href="/track" 
-              className="hidden sm:flex flex-col items-center justify-center h-20 cursor-pointer text-charcoal hover:text-primary-500 transition-colors"
-            >
-              <Package size={18} className="stroke-[1.8]" />
-              <span className="text-[10px] font-bold mt-1 tracking-wide">Track</span>
-            </Link>
-
-            {/* Wishlist */}
-            <Link 
-              href="/shop" 
-              className="hidden sm:flex flex-col items-center justify-center h-20 cursor-pointer text-charcoal hover:text-primary-500 transition-colors"
-            >
-              <Heart size={18} className="stroke-[1.8]" />
-              <span className="text-[10px] font-bold mt-1 tracking-wide">Wishlist</span>
-            </Link>
-
-            {/* Bag (Cart Drawer) */}
+          {/* Right Action Icons (Desktop & Mobile) */}
+          <div className="flex items-center space-x-3 sm:space-x-5 shrink-0">
+            {/* Mobile Search Toggle */}
             <button
-              onClick={() => setCartOpen(true)}
-              className="relative flex flex-col items-center justify-center h-20 cursor-pointer text-charcoal hover:text-primary-500 transition-colors bg-transparent border-none p-0"
-              aria-label="Open Cart"
+              onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+              className="p-1.5 text-[#242220] hover:text-[#b85d68] md:hidden cursor-pointer"
+              aria-label="Open search"
             >
-              <ShoppingBag size={18} className="stroke-[1.8]" />
-              <span className="text-[10px] font-bold mt-1 tracking-wide">Bag</span>
-              {cartCount > 0 && (
-                <span className="absolute top-1.5 right-[-5px] flex h-4.5 w-4.5 items-center justify-center rounded-full bg-primary-500 text-[8px] font-black text-white shadow">
-                  {cartCount}
-                </span>
-              )}
+              <Search size={19} />
             </button>
 
-            {/* Mobile Menu Toggle */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-charcoal hover:text-primary-500 md:hidden cursor-pointer bg-cream-200 rounded-lg"
+            {/* Account / Admin Link */}
+            <Link
+              href="/admin/login"
+              className="hidden sm:flex flex-col items-center text-[#242220] hover:text-[#b85d68] transition-colors p-1"
+              title="Admin Login & Account"
             >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              <User size={19} className="stroke-[1.8]" />
+              <span className="text-[9px] font-bold tracking-wider uppercase mt-1">Account</span>
+            </Link>
+
+            {/* Wishlist Link */}
+            <Link
+              href="/shop"
+              className="flex flex-col items-center text-[#242220] hover:text-[#b85d68] transition-colors p-1"
+              title="View Wishlist"
+            >
+              <Heart size={19} className="stroke-[1.8]" />
+              <span className="text-[9px] font-bold tracking-wider uppercase mt-1 hidden sm:inline">Wishlist</span>
+            </Link>
+
+            {/* Bag Button */}
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative flex flex-col items-center text-[#242220] hover:text-[#b85d68] transition-colors p-1 cursor-pointer"
+              aria-label="Open Shopping Bag"
+            >
+              <div className="relative">
+                <ShoppingBag size={19} className="stroke-[1.8]" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1.5 -right-2 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#b85d68] text-[9px] font-bold text-white shadow-xs">
+                    {cartCount}
+                  </span>
+                )}
+              </div>
+              <span className="text-[9px] font-bold tracking-wider uppercase mt-1 hidden sm:inline">Bag</span>
             </button>
           </div>
         </div>
+
+        {/* Mobile Search Dropdown Input */}
+        {isMobileSearchOpen && (
+          <div className="md:hidden py-3 border-t border-[#e6e1d7] animate-fade-in">
+            <form onSubmit={handleSearchSubmit} className="relative">
+              <input
+                type="text"
+                placeholder="Search cotton dresses, sets..."
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
+                autoFocus
+                className="w-full rounded-full bg-[#f3efe9] py-2.5 pl-4 pr-10 text-xs focus:outline-none focus:bg-white border border-transparent focus:border-[#e6e1d7] text-[#242220]"
+              />
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#b85d68] p-1"
+                aria-label="Submit search"
+              >
+                <Search size={16} />
+              </button>
+            </form>
+          </div>
+        )}
       </div>
 
       {/* Mobile Drawer Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed top-20 left-0 right-0 border-t border-cream-300 bg-white px-4 py-4 space-y-4 animate-fade-in shadow-xl z-50">
-          {/* Mobile Search */}
-          <form onSubmit={handleSearchSubmit} className="relative">
-            <input
-              type="text"
-              placeholder="Search items..."
-              value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
-              className="w-full rounded bg-cream-200 py-2.5 pl-4 pr-10 text-xs focus:outline-none placeholder-gray-400 text-charcoal"
-            />
-            <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-              <Search size={16} />
-            </button>
-          </form>
+        <div className="lg:hidden fixed top-[72px] inset-x-0 bottom-0 bg-[#242220]/40 backdrop-blur-xs z-50">
+          <div className="bg-white max-w-sm w-full h-full p-6 space-y-6 shadow-2xl overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#e6e1d7] pb-4">
+              <div>
+                <p className="font-serif text-lg font-bold text-[#242220]">DUALAT</p>
+                <p className="text-[10px] text-[#b85d68] font-semibold uppercase tracking-widest">Modest & Beautiful Kidswear</p>
+              </div>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 text-[#242220] hover:text-[#b85d68]"
+              >
+                <X size={20} />
+              </button>
+            </div>
 
-          {/* Mobile Navigation Links */}
-          <nav className="flex flex-col space-y-2">
-            <button
-              onClick={() => selectCategoryAndNavigate(null)}
-              className="w-full text-left py-2.5 px-3 hover:bg-cream-200 rounded font-bold text-xs uppercase tracking-wider text-charcoal cursor-pointer"
-            >
-              Shop All
-            </button>
-            <div
-              className="w-full flex justify-between items-center text-left py-2.5 px-3 rounded font-bold text-xs uppercase tracking-wider text-gray-400 cursor-not-allowed bg-cream-50"
-            >
-              <span>Boys Wear</span>
-              <span className="text-[9px] bg-cream-200 text-gray-500 px-1.5 py-0.5 rounded-sm normal-case">Coming Soon</span>
+            <nav className="flex flex-col space-y-3 text-xs font-bold uppercase tracking-widest text-[#242220]">
+              <Link
+                href="/girls"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between py-2.5 border-b border-[#f3efe9] hover:text-[#b85d68]"
+              >
+                <span>New Arrivals</span>
+                <ChevronRight size={14} className="text-[#8c8780]" />
+              </Link>
+              <Link
+                href="/girls"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between py-2.5 border-b border-[#f3efe9] hover:text-[#b85d68]"
+              >
+                <span>Girls Collection</span>
+                <ChevronRight size={14} className="text-[#8c8780]" />
+              </Link>
+              <Link
+                href="/girls/dresses"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between py-2.5 border-b border-[#f3efe9] hover:text-[#b85d68]"
+              >
+                <span>Dresses & Frocks</span>
+                <ChevronRight size={14} className="text-[#8c8780]" />
+              </Link>
+              <Link
+                href="/shop"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between py-2.5 border-b border-[#f3efe9] hover:text-[#b85d68]"
+              >
+                <span>Shop by Age (0–9Y)</span>
+                <ChevronRight size={14} className="text-[#8c8780]" />
+              </Link>
+              <Link
+                href="/journal"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between py-2.5 border-b border-[#f3efe9] hover:text-[#b85d68]"
+              >
+                <span>Parenting Journal</span>
+                <ChevronRight size={14} className="text-[#8c8780]" />
+              </Link>
+              <Link
+                href="/about"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-between py-2.5 border-b border-[#f3efe9] hover:text-[#b85d68]"
+              >
+                <span>Our Story</span>
+                <ChevronRight size={14} className="text-[#8c8780]" />
+              </Link>
+            </nav>
+
+            <div className="pt-4 border-t border-[#e6e1d7] space-y-3">
+              <Link
+                href="/track"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-xs font-semibold text-[#6b6661] hover:text-[#b85d68]"
+              >
+                Track Your Order
+              </Link>
+              <Link
+                href="/size-guide"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-xs font-semibold text-[#6b6661] hover:text-[#b85d68]"
+              >
+                Age & Size Guide
+              </Link>
+              <a
+                href="https://wa.me/918848722023?text=Hi%20Dualat%2C%20I%20need%20assistance"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-xs font-semibold text-[#719373] hover:text-[#58765a]"
+              >
+                WhatsApp (+91 88487 22023)
+              </a>
             </div>
-            <button
-              onClick={() => selectCategoryAndNavigate('girls')}
-              className="w-full text-left py-2.5 px-3 hover:bg-cream-200 rounded font-bold text-xs uppercase tracking-wider text-charcoal cursor-pointer"
-            >
-              Girls Wear
-            </button>
-            <div
-              className="w-full flex justify-between items-center text-left py-2.5 px-3 rounded font-bold text-xs uppercase tracking-wider text-gray-400 cursor-not-allowed bg-cream-50"
-            >
-              <span>Unisex Wear</span>
-              <span className="text-[9px] bg-cream-200 text-gray-500 px-1.5 py-0.5 rounded-sm normal-case">Coming Soon</span>
-            </div>
-          </nav>
+          </div>
         </div>
       )}
     </header>
   );
 }
-

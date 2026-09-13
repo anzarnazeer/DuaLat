@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Lock, Sparkles, Loader2, Mail } from "lucide-react";
+import { Lock, ShoppingBag, Loader2, Mail } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { Suspense } from "react";
 
@@ -50,7 +50,7 @@ function LoginForm() {
           <div className="relative">
             <div className="flex flex-col items-center mb-8">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/30 mb-4">
-                <Sparkles size={20} className="text-white" />
+                <ShoppingBag size={20} className="text-white" />
               </div>
               <h1 className="text-2xl font-bold text-white tracking-tight">Admin Console</h1>
               <p className="text-sm text-white/50 mt-1">Enter your password to access the dashboard</p>

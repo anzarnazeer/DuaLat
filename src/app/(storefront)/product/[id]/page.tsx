@@ -1,16 +1,3 @@
-/**
- * src/app/product/[id]/page.tsx
- *
- * CONCEPT: This is a React Server Component (RSC).
- * It has NO "use client" directive, which means it runs ONLY on the server.
- * This lets us query the database directly — no fetch() needed, no API roundtrip.
- *
- * WHY THIS IS POWERFUL:
- * - The DB query happens on the server before any HTML is sent to the browser
- * - The user gets a fully-rendered page (great for SEO and performance)
- * - Database credentials are never exposed to the browser
- */
-
 import React from 'react';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/db';
@@ -21,39 +8,40 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-// CONCEPT: generateMetadata is also a Server-only function.
-// It lets Next.js set <title> and <meta> tags dynamically per product.
-// This is critical for SEO — search engines see the real product name.
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
 
-  // Direct DB query — runs on the server, never exposed to the client
   const product = await prisma.product.findUnique({
     where: { id },
-    select: { name: true, description: true, fabricTags: true }, // Only fetch what we need
+    select: { name: true, description: true, images: true, fabricTags: true, basePrice: true, salePrice: true },
   });
 
   if (!product) {
-    return { title: 'Product Not Found | DuaLat' };
+    return { title: 'Product Not Found | Dualat' };
   }
 
+  const cleanDescription = product.description.length > 155 
+    ? product.description.slice(0, 152) + '...'
+    : product.description;
+
   return {
-    title: `${product.name} | DuaLat Organic Kids' Wear Kerala`,
-    description: `Shop ${product.name} in Kerala. ${product.description} Perfect for babies and toddlers 6 months to 5 years. Features: ${product.fabricTags.join(', ')}.`,
-    keywords: [product.name, "kids wear Kerala", "baby clothes online", "toddler fashion Kerala"],
+    title: `${product.name} | Dualat Kidswear Online India`,
+    description: `Shop the ${product.name} from Dualat. ${cleanDescription} Available in multiple sizes with delivery across India.`,
+    alternates: {
+      canonical: `https://www.dualat.in/product/${id}`,
+    },
     openGraph: {
-      title: `${product.name} | DuaLat Organic Kids' Wear Kerala`,
-      description: `Shop ${product.name} in Kerala. Perfect for babies and toddlers 6 months to 5 years.`
-    }
+      title: `${product.name} | Dualat`,
+      description: cleanDescription,
+      url: `https://www.dualat.in/product/${id}`,
+      images: product.images?.[0] ? [{ url: product.images[0] }] : [],
+    },
   };
 }
 
 export default async function ProductPage({ params }: PageProps) {
   const { id } = await params;
 
-  // CONCEPT: prisma.product.findUnique() generates SQL like:
-  // SELECT * FROM products WHERE id = ? LIMIT 1
-  // The `include` adds JOINs for related tables.
   const product = await prisma.product.findUnique({
     where: { id },
     include: {
@@ -62,10 +50,23 @@ export default async function ProductPage({ params }: PageProps) {
     },
   });
 
-  // If no product found, Next.js shows the closest not-found.tsx page
   if (!product) {
     notFound();
   }
+
+  // Fetch real related outfits from database
+  const relatedProducts = await prisma.product.findMany({
+    where: {
+      id: { not: id },
+    },
+    take: 4,
+    include: {
+      sizes: { orderBy: { size: 'asc' } },
+      reviews: true,
+    },
+  });
+
+  const currentPrice = product.salePrice || product.basePrice;
 
   const jsonLd = {
     "@context": "https://schema.org/",
@@ -73,29 +74,86 @@ export default async function ProductPage({ params }: PageProps) {
     "name": product.name,
     "image": product.images,
     "description": product.description,
+    "sku": product.id,
     "brand": {
       "@type": "Brand",
-      "name": "DuaLat"
+      "name": "Dualat"
     },
     "offers": {
       "@type": "Offer",
-      "url": `https://dua-lat.vercel.app/product/${product.id}`,
+      "url": `https://www.dualat.in/product/${product.id}`,
       "priceCurrency": "INR",
-      "price": product.salePrice || product.basePrice,
-      "availability": "https://schema.org/InStock",
+      "price": currentPrice,
+      "priceValidUntil": "2027-12-31",
+      "itemCondition": "https://schema.org/NewCondition",
+      "availability": product.sizes.some(s => s.stockCount > 0) 
+        ? "https://schema.org/InStock" 
+        : "https://schema.org/OutOfStock",
       "seller": {
         "@type": "Organization",
-        "name": "DuaLat"
+        "name": "Dualat"
+      },
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "value": "0",
+          "currency": "INR"
+        },
+        "shippingDestination": {
+          "@type": "DefinedRegion",
+          "addressCountry": "IN"
+        },
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "businessDays": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+          },
+          "transitTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 3,
+            "maxValue": 7,
+            "unitCode": "d"
+          }
+        }
+      },
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "IN",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 7,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
       }
     }
   };
 
-  // CONCEPT: We pass the DB result to a Client Component for interactivity.
-  // Server Components handle data fetching; Client Components handle user interactions
-  // (like selecting sizes, adding to cart, submitting reviews).
-  //
-  // We cast to `any` here to bridge between the Prisma type and the mockData type.
-  // In a future refactor, we'd unify these types.
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://www.dualat.in"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Girls",
+        "item": "https://www.dualat.in/girls"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": product.name,
+        "item": `https://www.dualat.in/product/${product.id}`
+      }
+    ]
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (
     <div className="py-2">
@@ -103,7 +161,14 @@ export default async function ProductPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <ProductDetailClient product={product as any} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <ProductDetailClient
+        product={product as any}
+        relatedProducts={relatedProducts as any}
+      />
     </div>
   );
 }

@@ -1,34 +1,39 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const content = `# DuaLat Kids Wear
+  const content = `# DUALAT Kidswear
 
-## About the Brand
-DuaLat is a premium, organic kids and baby wear brand based in Kerala, India. We specialize in ultra-soft, frictionless, and hypoallergenic clothing designed specifically for children aged 6 months to 5 years old. 
+## Brand Overview
+DUALAT is an Indian boutique kidswear brand focused primarily on girls aged 0 to 9 years. Originating from Kerala, India, Dualat delivers thoughtfully to families nationwide.
 
-Our mission is to provide parents with high-quality, comfortable, and safe clothing for their toddlers and infants, ensuring quick diaper changes and active play without irritation.
+## Core Positioning
+“Modest, Comfortable & Beautiful Kidswear for Little Girls.”
 
-## The Founder
-DuaLat was founded by Asna, a young entrepreneur and a proud mother of a 1-year-old girl. Asna started DuaLat out of a personal struggle to find stylish yet gentle clothes for her daughter's sensitive skin in Kerala. Every piece is designed by a mother, for mothers.
+## Brand Ethos
+- **Born from Motherhood**: Inspired by a mother's personal search for clothing that feels comfortable, modest, and graceful for little girls.
+- **Comfort-First Styles**: Relaxed silhouettes, soft contrast collars, smocked details, and gentle elasticated fits allowing free movement.
+- **Breathable Natural Fabrics**: Skin-friendly textured cottons, soft poplins, and lightweight cotton weaves ideal for warm Indian climates.
+- **Made for Little Moments**: Timeless checks, delicate floral lace, and everyday co-ords crafted for family moments, playdates, and festivals.
 
-## Core Features & Brand Ethos
-- **Certified Organic**: We use GOTS certified organic cotton, grown chemical-free, making it extremely gentle on baby skin.
-- **Tagless Comfort**: Smooth tagless necklines and flatlock stitch seams to protect against baby eczema.
-- **Eczema Friendly**: Water-based, non-toxic organic dye prints. No allergens or harsh metals.
-- **2-Way Diaper Zips**: Innovative two-way diaper zipper integrations on rompers for changes in under 30 seconds.
+## Product Range
+- Dresses & Frocks
+- Two-Piece Sets & Co-ords
+- Everyday Cotton Wear
+- Festive & Occasion Outfits
+- Age Groups: 0–1Y, 1–2Y, 2–3Y, 3–5Y, 5–7Y, 7–9Y
 
-## Target Audience
-- Parents of babies and toddlers aged 6 months to 5 years.
-- Geographically focused on Kerala, India.
-- Parents seeking organic, hypoallergenic, and premium quality clothing for their children.
+## Official Links
+- **Website**: https://www.dualat.in
+- **Girls Collection**: https://www.dualat.in/girls
+- **Shop by Age**: https://www.dualat.in/shop
+- **Parenting Journal**: https://www.dualat.in/journal
+- **Size Guide**: https://www.dualat.in/size-guide
+- **Order Tracking**: https://www.dualat.in/track
+- **Contact & WhatsApp**: https://www.dualat.in/contact
 
-## Key Links
-- **Website**: https://dua-lat.vercel.app
-- **Shop**: https://dua-lat.vercel.app/shop
-- **Order Tracking**: https://dua-lat.vercel.app/track
-
-## Contact Information
-- **WhatsApp Support & Orders**: +91 8848422023
+## Service & Support
+- **Delivery**: Pan India doorstep courier delivery within 4–7 business days.
+- **Exchange**: 7-day hassle-free size exchange for unworn garments.
 `;
 
   return new NextResponse(content, {
